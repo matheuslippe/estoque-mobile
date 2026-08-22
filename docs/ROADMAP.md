@@ -36,18 +36,18 @@ estoque-mobile/
 
 ## Fase 0 — Planejamento (1–2 dias)
 
-- [ ] Ler `db.py` do projeto atual e listar toda regra de negócio (níveis de estoque, cálculo de lista de compras, reposição em lote, análise de consumo) — isso vira a especificação do novo backend
-- [ ] Definir o MVP: quais telas o mobile precisa ter no primeiro release
-- [ ] Criar o repositório público `estoque-mobile` no GitHub
+- [x] Ler `db.py` do projeto atual e listar toda regra de negócio (níveis de estoque, cálculo de lista de compras, reposição em lote, análise de consumo) — isso vira a especificação do novo backend → [docs/SPEC_BACKEND.md](SPEC_BACKEND.md)
+- [x] Definir o MVP: quais telas o mobile precisa ter no primeiro release → mantido igual à lista da Fase 3 (Início, Detalhe do item, Lista de compras, Histórico, Análise)
+- [ ] Criar o repositório público `estoque-mobile` no GitHub (repo local já iniciado com git; falta criar o remoto e dar push)
 - [ ] Criar um board simples (GitHub Projects ou Issues) para quebrar as fases abaixo em tarefas menores
 
 ## Fase 1 — Backend Django: fundação (2–3 dias)
 
-- [ ] `django-admin startproject core .`
-- [ ] Criar apps: `estoque`, `historico`, `shopping`
-- [ ] Modelar `Item` (nome, categoria, qtd, qtd_minima) e `Movimentacao` (item FK, tipo, quantidade, data_hora, origem, obs) — espelhando as tabelas atuais
-- [ ] Registrar os models no Django Admin (ganho rápido: você já tem um painel de gestão funcional antes mesmo da API existir)
-- [ ] `makemigrations` / `migrate` e testar CRUD direto pelo admin
+- [x] `django-admin startproject core .`
+- [x] Criar apps: `estoque`, `historico`, `shopping`
+- [x] Modelar `Item` (nome, categoria, qtd, qtd_minima) e `Movimentacao` (item FK, tipo, quantidade, data_hora, origem, obs) — espelhando as tabelas atuais
+- [x] Registrar os models no Django Admin (ganho rápido: você já tem um painel de gestão funcional antes mesmo da API existir)
+- [x] `makemigrations` / `migrate` e testar CRUD direto pelo admin (testado no navegador: cadastro de item e cálculo de status "ok"/"baixo"/"zerado" funcionando)
 
 ## Fase 2 — API REST (3–4 dias)
 
