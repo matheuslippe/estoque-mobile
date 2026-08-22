@@ -1,22 +1,34 @@
-"""
-URL configuration for core project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from rest_framework.permissions import AllowAny
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from estoque.views import ItemViewSet
+from historico.views import MovimentacaoViewSet
+from shopping.views import ListaComprasView, ReposicaoLoteView
+
+router = DefaultRouter()
+router.register("itens", ItemViewSet, basename="item")
+router.register("movimentacoes", MovimentacaoViewSet, basename="movimentacao")
+
+
+class OpenSpectacularAPIView(SpectacularAPIView):
+    permission_classes = [AllowAny]
+
+
+class OpenSpectacularSwaggerView(SpectacularSwaggerView):
+    permission_classes = [AllowAny]
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+    path("api/", include(router.urls)),
+    path("api/lista-compras/", ListaComprasView.as_view(), name="lista-compras"),
+    path("api/reposicao-lote/", ReposicaoLoteView.as_view(), name="reposicao-lote"),
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/schema/", OpenSpectacularAPIView.as_view(), name="schema"),
+    path("api/docs/", OpenSpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
 ]

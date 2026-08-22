@@ -51,15 +51,15 @@ estoque-mobile/
 
 ## Fase 2 — API REST (3–4 dias)
 
-- [ ] Instalar `djangorestframework`, `django-cors-headers`, `djangorestframework-simplejwt`
-- [ ] Serializers para `Item` e `Movimentacao`
-- [ ] ViewSets + Router: `/api/itens/`, `/api/movimentacoes/`
-- [ ] Autenticação: `/api/token/` e `/api/token/refresh/`
-- [ ] Endpoint de negócio `/api/lista-compras/` — itens com `qtd <= qtd_minima`, já com a quantidade sugerida
-- [ ] Endpoint de negócio `POST /api/reposicao-lote/` — repõe todos os faltantes a 2x o mínimo
-- [ ] Endpoint de análise `/api/itens/{id}/analise/` — consumo, tendência, estimativa de dias restantes
-- [ ] Testes automatizados (`pytest-django`) cobrindo as regras migradas do `db.py`
-- [ ] Documentação automática da API (`drf-spectacular`, gera Swagger/OpenAPI)
+- [x] Instalar `djangorestframework`, `django-cors-headers`, `djangorestframework-simplejwt`
+- [x] Serializers para `Item` e `Movimentacao`
+- [x] ViewSets + Router: `/api/itens/`, `/api/movimentacoes/`
+- [x] Autenticação: `/api/token/` e `/api/token/refresh/`
+- [x] Endpoint de negócio `/api/lista-compras/` — itens com `qtd <= qtd_minima`, já com a quantidade sugerida
+- [x] Endpoint de negócio `POST /api/reposicao-lote/` — repõe todos os faltantes a 2x o mínimo
+- [x] Endpoint de análise `/api/itens/{id}/analise/` — consumo, tendência, estimativa de dias restantes
+- [x] Testes automatizados (`pytest-django`) cobrindo as regras migradas do `db.py` — 16 testes, todos passando
+- [x] Documentação automática da API (`drf-spectacular`, gera Swagger/OpenAPI) — `/api/docs/` e `/api/schema/`
 
 ## Fase 3 — App mobile (React Native + Expo) (1–2 semanas)
 
