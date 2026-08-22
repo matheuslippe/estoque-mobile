@@ -1,0 +1,29 @@
+# Estoque Mobile
+
+Reinício do Gestor de Estoque: backend em Django + Django REST Framework e app mobile em React Native (Expo) como cliente principal.
+
+Migra a regra de negócio do projeto original (Python + Streamlit + SQLite + bot de Telegram com IA) para uma arquitetura multiplataforma, mantendo o projeto antigo intacto como referência funcional.
+
+## Estrutura
+
+```
+estoque-mobile/
+├── backend/
+│   ├── core/            # settings do projeto Django
+│   ├── estoque/         # app: Item, Categoria
+│   ├── historico/       # app: Movimentacao
+│   ├── shopping/        # app: lista de compras / reposição em lote
+│   ├── bots/             # integração Telegram + Gemini
+│   └── manage.py
+├── mobile/               # app Expo/React Native
+└── docs/
+    └── ROADMAP.md        # plano completo do projeto, por fases
+```
+
+Veja o plano completo em [docs/ROADMAP.md](docs/ROADMAP.md).
+
+## Stack
+
+- **Backend:** Django + Django REST Framework, JWT (`djangorestframework-simplejwt`), PostgreSQL
+- **Mobile:** React Native com Expo
+- **Bot:** Telegram + Gemini (IA para comandos por texto/áudio)

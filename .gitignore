@@ -1,0 +1,28 @@
+# Python / Django
+__pycache__/
+*.py[cod]
+*.sqlite3
+.env
+.venv/
+venv/
+env/
+staticfiles/
+media/
+
+# Node / Expo / React Native
+node_modules/
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
