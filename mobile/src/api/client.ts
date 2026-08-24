@@ -23,6 +23,7 @@ export const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:8000
 
 const ACCESS_KEY = "estoque_access_token";
 const REFRESH_KEY = "estoque_refresh_token";
+const USERNAME_KEY = "estoque_username";
 
 export const tokenStorage = {
   async getAccess() {
@@ -31,9 +32,13 @@ export const tokenStorage = {
   async getRefresh() {
     return storage.getItem(REFRESH_KEY);
   },
-  async save(access: string, refresh: string) {
+  async getUsername() {
+    return storage.getItem(USERNAME_KEY);
+  },
+  async save(access: string, refresh: string, username: string) {
     await storage.setItem(ACCESS_KEY, access);
     await storage.setItem(REFRESH_KEY, refresh);
+    await storage.setItem(USERNAME_KEY, username);
   },
   async saveAccess(access: string) {
     await storage.setItem(ACCESS_KEY, access);
@@ -41,6 +46,7 @@ export const tokenStorage = {
   async clear() {
     await storage.deleteItem(ACCESS_KEY);
     await storage.deleteItem(REFRESH_KEY);
+    await storage.deleteItem(USERNAME_KEY);
   },
 };
 

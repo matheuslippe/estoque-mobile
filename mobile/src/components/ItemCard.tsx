@@ -1,49 +1,68 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Item } from "../types";
-import { useThemeColors } from "../theme/colors";
-import { StatusBadge } from "./StatusBadge";
+import { useStatusStyle, useThemeColors } from "../theme/colors";
+import { fonts } from "../theme/fonts";
 import { NivelBar } from "./NivelBar";
+import { StatusBadge } from "./StatusBadge";
+
+function iniciais(nome: string) {
+  const partes = nome.trim().split(/\s+/);
+  const letras = partes.length > 1 ? partes[0][0] + partes[1][0] : nome.slice(0, 2);
+  return letras.toUpperCase();
+}
 
 export function ItemCard({ item, onPress }: { item: Item; onPress: () => void }) {
   const colors = useThemeColors();
+  const statusStyle = useStatusStyle(item.status);
+
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.card,
-        { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
-      ]}
+      style={({ pressed }) => [styles.card, { backgroundColor: colors.surface, opacity: pressed ? 0.7 : 1 }]}
     >
-      <View style={styles.header}>
-        <Text style={[styles.nome, { color: colors.text }]} numberOfLines={1}>
-          {item.nome}
-        </Text>
-        <StatusBadge status={item.status} />
+      <View style={[styles.avatar, { backgroundColor: statusStyle.bg }]}>
+        <Text style={[styles.avatarText, { color: statusStyle.fg, fontFamily: fonts.heading }]}>{iniciais(item.nome)}</Text>
       </View>
-      <Text style={[styles.categoria, { color: colors.textMuted }]}>{item.categoria}</Text>
-      <NivelBar percentual={item.percentual} status={item.status} />
-      <Text style={[styles.qtd, { color: colors.textMuted }]}>
-        {item.qtd} un. (min. {item.qtd_minima})
-      </Text>
+      <View style={styles.body}>
+        <View style={styles.headerRow}>
+          <Text style={[styles.nome, { color: colors.text, fontFamily: fonts.semiBold }]} numberOfLines={1}>
+            {item.nome}
+          </Text>
+          <StatusBadge status={item.status} />
+        </View>
+        <View style={styles.nivelRow}>
+          <View style={styles.flex}>
+            <NivelBar percentual={item.percentual} status={item.status} />
+          </View>
+          <Text style={[styles.qtd, { color: colors.textMuted }]}>
+            {item.qtd} / {item.qtd_minima}
+          </Text>
+        </View>
+      </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    borderWidth: 1,
-    borderRadius: 14,
-    padding: 14,
-    gap: 8,
-  },
-  header: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    gap: 8,
+    gap: 12,
+    borderRadius: 18,
+    padding: 12,
+    shadowColor: "#2e2b25",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.12,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  nome: { fontSize: 16, fontWeight: "700", flexShrink: 1 },
-  categoria: { fontSize: 12, textTransform: "uppercase", letterSpacing: 0.5 },
-  qtd: { fontSize: 13 },
+  avatar: { width: 38, height: 38, borderRadius: 13, alignItems: "center", justifyContent: "center" },
+  avatarText: { fontSize: 13 },
+  body: { flex: 1, minWidth: 0, gap: 6 },
+  headerRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  nome: { fontSize: 15, flex: 1, minWidth: 0 },
+  nivelRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  flex: { flex: 1 },
+  qtd: { fontSize: 11.5 },
 });

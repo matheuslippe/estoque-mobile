@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { isAuthenticated, login as apiLogin, logout as apiLogout } from "../api/auth";
+import { getStoredUsername, isAuthenticated, login as apiLogin, logout as apiLogout } from "../api/auth";
 import { setSessionExpiredHandler } from "../api/client";
 
 interface AuthContextValue {
   loading: boolean;
   signedIn: boolean;
+  username: string | null;
   error: string | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -15,11 +16,13 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [signedIn, setSignedIn] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    isAuthenticated().then((v) => {
+    Promise.all([isAuthenticated(), getStoredUsername()]).then(([v, storedUsername]) => {
       setSignedIn(v);
+      setUsername(storedUsername);
       setLoading(false);
     });
     setSessionExpiredHandler(() => setSignedIn(false));
@@ -30,6 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await apiLogin(username, password);
       setSignedIn(true);
+      setUsername(username);
     } catch {
       setError("Usuario ou senha invalidos.");
       throw new Error("invalid_credentials");
@@ -39,10 +43,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(async () => {
     await apiLogout();
     setSignedIn(false);
+    setUsername(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ loading, signedIn, error, login, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ loading, signedIn, username, error, login, logout }}>{children}</AuthContext.Provider>
   );
 }
 

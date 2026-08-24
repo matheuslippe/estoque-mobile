@@ -1,10 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ArrowDownToLine, ArrowUpFromLine, RefreshCcw, Pencil, Trash2 } from "lucide-react-native";
 import { listarHistorico } from "../api/historico";
 import { listarItens } from "../api/itens";
 import { Item, Movimentacao, TipoMovimentacao } from "../types";
+import { useAuth } from "../context/AuthContext";
 import { useThemeColors } from "../theme/colors";
+import { fonts } from "../theme/fonts";
 
 const PERIODOS = [
   { label: "7 dias", dias: 7 },
@@ -15,10 +19,18 @@ const PERIODOS = [
 
 const TIPO_LABEL: Record<TipoMovimentacao, string> = {
   ENTRADA: "Entrada",
-  SAIDA: "Saida",
+  SAIDA: "Saída",
   AJUSTE: "Ajuste",
   CADASTRO: "Cadastro",
-  EXCLUSAO: "Exclusao",
+  EXCLUSAO: "Exclusão",
+};
+
+const TIPO_ICON: Record<TipoMovimentacao, typeof ArrowDownToLine> = {
+  ENTRADA: ArrowDownToLine,
+  SAIDA: ArrowUpFromLine,
+  AJUSTE: RefreshCcw,
+  CADASTRO: Pencil,
+  EXCLUSAO: Trash2,
 };
 
 function formatarData(iso: string) {
@@ -26,14 +38,9 @@ function formatarData(iso: string) {
   return d.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 }
 
-function corTipo(tipo: TipoMovimentacao, colors: ReturnType<typeof useThemeColors>) {
-  if (tipo === "ENTRADA" || tipo === "CADASTRO") return colors.ok;
-  if (tipo === "SAIDA" || tipo === "EXCLUSAO") return colors.zerado;
-  return colors.baixo;
-}
-
 export function HistoryScreen() {
   const colors = useThemeColors();
+  const { logout } = useAuth();
   const [movs, setMovs] = useState<Movimentacao[]>([]);
   const [itens, setItens] = useState<Item[]>([]);
   const [itemFiltro, setItemFiltro] = useState<number | null>(null);
@@ -67,7 +74,14 @@ export function HistoryScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView edges={["top"]} style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={styles.headerRow}>
+        <Text style={[styles.title, { color: colors.text, fontFamily: fonts.heading }]}>Histórico</Text>
+        <Pressable onPress={logout} hitSlop={10}>
+          <Text style={[styles.sair, { color: colors.primaryStrong }]}>Sair</Text>
+        </Pressable>
+      </View>
+
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsRow}>
         {PERIODOS.map((p) => (
           <Chip key={p.label} label={p.label} active={p.dias === periodo.dias} onPress={() => setPeriodo(p)} colors={colors} />
@@ -94,29 +108,37 @@ export function HistoryScreen() {
           data={movs}
           keyExtractor={(m) => String(m.id)}
           contentContainerStyle={styles.list}
-          renderItem={({ item }) => (
-            <View style={[styles.linha, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-              <View style={[styles.tipoDot, { backgroundColor: corTipo(item.tipo, colors) }]} />
-              <View style={styles.flex}>
-                <Text style={[styles.item, { color: colors.text }]}>{item.item_nome}</Text>
-                <Text style={[styles.detalhe, { color: colors.textMuted }]}>
-                  {TIPO_LABEL[item.tipo]} · {formatarData(item.data_hora)}
-                  {item.obs ? ` · ${item.obs}` : ""}
+          renderItem={({ item }) => {
+            const Icon = TIPO_ICON[item.tipo];
+            const positivo = item.tipo === "ENTRADA" || item.tipo === "CADASTRO";
+            const negativo = item.tipo === "SAIDA" || item.tipo === "EXCLUSAO";
+            const cor = positivo ? colors.secondary : negativo ? colors.primaryStrong : colors.textMuted;
+            return (
+              <View style={[styles.linha, { backgroundColor: colors.surface }]}>
+                <View style={[styles.iconWrap, { backgroundColor: cor + "1f" }]}>
+                  <Icon size={17} color={cor} strokeWidth={2.5} />
+                </View>
+                <View style={styles.flex}>
+                  <Text style={[styles.item, { color: colors.text, fontFamily: fonts.semiBold }]}>{item.item_nome}</Text>
+                  <Text style={[styles.detalhe, { color: colors.textMuted }]}>
+                    {TIPO_LABEL[item.tipo]} · {formatarData(item.data_hora)}
+                    {item.obs ? ` · ${item.obs}` : ""}
+                  </Text>
+                </View>
+                <Text style={[styles.qtd, { color: cor, fontFamily: fonts.heading }]}>
+                  {negativo ? "-" : "+"}
+                  {item.quantidade}
                 </Text>
               </View>
-              <Text style={[styles.qtd, { color: corTipo(item.tipo, colors) }]}>
-                {item.tipo === "SAIDA" || item.tipo === "EXCLUSAO" ? "-" : "+"}
-                {item.quantidade}
-              </Text>
-            </View>
-          )}
+            );
+          }}
           ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
           ListEmptyComponent={
-            <Text style={[styles.empty, { color: colors.textMuted }]}>Nenhuma movimentacao no periodo.</Text>
+            <Text style={[styles.empty, { color: colors.textMuted }]}>Nenhuma movimentação no período.</Text>
           }
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -134,29 +156,26 @@ function Chip({
   return (
     <Pressable
       onPress={onPress}
-      style={[
-        styles.chip,
-        {
-          backgroundColor: active ? colors.primary : colors.surface,
-          borderColor: active ? colors.primary : colors.border,
-        },
-      ]}
+      style={[styles.chip, { backgroundColor: active ? colors.primary : colors.surface }]}
     >
-      <Text style={{ color: active ? "#fff" : colors.text, fontSize: 13, fontWeight: "600" }}>{label}</Text>
+      <Text style={{ color: active ? colors.primaryText : colors.text, fontSize: 13, fontFamily: fonts.semiBold }}>{label}</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 12 },
-  chipsRow: { flexGrow: 0, marginBottom: 10, paddingHorizontal: 16 },
-  chip: { borderWidth: 1, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 7, marginRight: 8 },
-  list: { paddingHorizontal: 16, paddingBottom: 24 },
-  linha: { flexDirection: "row", alignItems: "center", borderWidth: 1, borderRadius: 12, padding: 12, gap: 10 },
-  tipoDot: { width: 8, height: 8, borderRadius: 4 },
+  container: { flex: 1, paddingTop: 8 },
+  headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20, marginBottom: 12 },
+  title: { fontSize: 25 },
+  sair: { fontSize: 14, fontWeight: "600" },
+  chipsRow: { flexGrow: 0, marginBottom: 10, paddingHorizontal: 20 },
+  chip: { borderRadius: 999, paddingHorizontal: 14, paddingVertical: 8, marginRight: 8 },
+  list: { paddingHorizontal: 20, paddingBottom: 24, paddingTop: 8 },
+  linha: { flexDirection: "row", alignItems: "center", borderRadius: 16, padding: 12, gap: 12 },
+  iconWrap: { width: 36, height: 36, borderRadius: 12, alignItems: "center", justifyContent: "center" },
   flex: { flex: 1 },
-  item: { fontSize: 14, fontWeight: "600" },
+  item: { fontSize: 14.5 },
   detalhe: { fontSize: 12, marginTop: 2 },
-  qtd: { fontSize: 15, fontWeight: "800" },
+  qtd: { fontSize: 16 },
   empty: { textAlign: "center", marginTop: 40, fontSize: 14 },
 });

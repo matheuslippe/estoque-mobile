@@ -14,14 +14,17 @@ import {
   View,
 } from "react-native";
 import { BarChart } from "react-native-chart-kit";
-import { EstoqueStackParamList } from "../navigation/types";
+import { Minus, Plus, Pencil, Trash2 } from "lucide-react-native";
+import { ItemDetailParamList } from "../navigation/types";
 import { ajustarItem, analiseItem, excluirItem, movimentarItem, obterItem } from "../api/itens";
 import { AnaliseItem, Item } from "../types";
 import { useThemeColors } from "../theme/colors";
+import { fonts } from "../theme/fonts";
 import { StatusBadge } from "../components/StatusBadge";
 import { NivelBar } from "../components/NivelBar";
+import { Button } from "../components/ui/Button";
 
-type Props = NativeStackScreenProps<EstoqueStackParamList, "ItemDetail">;
+type Props = NativeStackScreenProps<ItemDetailParamList, "ItemDetail">;
 
 export function ItemDetailScreen({ route, navigation }: Props) {
   const { itemId } = route.params;
@@ -56,7 +59,7 @@ export function ItemDetailScreen({ route, navigation }: Props) {
       const atualizado = await movimentarItem(item.id, tipo, 1);
       setItem(atualizado);
     } catch (e: any) {
-      Alert.alert("Nao foi possivel", e?.response?.data?.detail ?? "Tente novamente.");
+      Alert.alert("Não foi possível", e?.response?.data?.detail ?? "Tente novamente.");
     } finally {
       setBusy(false);
     }
@@ -64,7 +67,7 @@ export function ItemDetailScreen({ route, navigation }: Props) {
 
   function confirmarExclusao() {
     if (!item) return;
-    Alert.alert("Excluir item", `Excluir "${item.nome}"? O historico e mantido.`, [
+    Alert.alert("Excluir item", `Excluir "${item.nome}"? O histórico é mantido.`, [
       { text: "Cancelar", style: "cancel" },
       {
         text: "Excluir",
@@ -95,46 +98,50 @@ export function ItemDetailScreen({ route, navigation }: Props) {
   return (
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={styles.container}>
       <View style={styles.headerRow}>
-        <Text style={[styles.nome, { color: colors.text }]}>{item.nome}</Text>
+        <Text style={[styles.nome, { color: colors.text, fontFamily: fonts.heading }]}>{item.nome}</Text>
         <StatusBadge status={item.status} />
       </View>
       <Text style={[styles.categoria, { color: colors.textMuted }]}>{item.categoria}</Text>
 
       <NivelBar percentual={item.percentual} status={item.status} />
       <Text style={[styles.qtdLinha, { color: colors.text }]}>
-        {item.qtd} unidades <Text style={{ color: colors.textMuted }}>(minimo {item.qtd_minima})</Text>
+        {item.qtd} unidades <Text style={{ color: colors.textMuted }}>(mínimo {item.qtd_minima})</Text>
       </Text>
 
       <View style={styles.actionsRow}>
         <Pressable
-          style={[styles.actionButton, { backgroundColor: colors.zerado }]}
+          style={[styles.actionButton, { backgroundColor: colors.surface }]}
           onPress={() => movimentar("SAIDA")}
           disabled={busy}
         >
-          <Text style={styles.actionText}>− Retirar</Text>
+          <Minus size={18} color={colors.text} strokeWidth={2.5} />
+          <Text style={[styles.actionText, { color: colors.text, fontFamily: fonts.semiBold }]}>Retirar</Text>
         </Pressable>
         <Pressable
-          style={[styles.actionButton, { backgroundColor: colors.ok }]}
+          style={[styles.actionButton, { backgroundColor: colors.primary }]}
           onPress={() => movimentar("ENTRADA")}
           disabled={busy}
         >
-          <Text style={styles.actionText}>+ Repor</Text>
+          <Plus size={18} color={colors.primaryText} strokeWidth={2.5} />
+          <Text style={[styles.actionText, { color: colors.primaryText, fontFamily: fonts.semiBold }]}>Repor</Text>
         </Pressable>
       </View>
 
       <View style={styles.secondaryRow}>
-        <Pressable onPress={() => setAjusteVisivel(true)}>
-          <Text style={[styles.link, { color: colors.primary }]}>Ajustar item</Text>
+        <Pressable style={styles.secondaryBtn} onPress={() => setAjusteVisivel(true)}>
+          <Pencil size={14} color={colors.primaryStrong} strokeWidth={2.5} />
+          <Text style={[styles.link, { color: colors.primaryStrong }]}>Ajustar item</Text>
         </Pressable>
-        <Pressable onPress={confirmarExclusao}>
-          <Text style={[styles.link, { color: colors.zerado }]}>Excluir</Text>
+        <Pressable style={styles.secondaryBtn} onPress={confirmarExclusao}>
+          <Trash2 size={14} color={colors.danger} strokeWidth={2.5} />
+          <Text style={[styles.link, { color: colors.danger }]}>Excluir</Text>
         </Pressable>
       </View>
 
-      <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-        <Text style={[styles.cardTitle, { color: colors.text }]}>Analise de consumo (30 dias)</Text>
+      <View style={[styles.card, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.cardTitle, { color: colors.text, fontFamily: fonts.heading }]}>Análise de consumo (30 dias)</Text>
         {!analise || analise.dias_obs === 0 ? (
-          <Text style={{ color: colors.textMuted }}>Sem retiradas registradas no periodo.</Text>
+          <Text style={{ color: colors.textMuted }}>Sem retiradas registradas no período.</Text>
         ) : (
           <>
             <View style={styles.statsRow}>
@@ -183,7 +190,7 @@ export function ItemDetailScreen({ route, navigation }: Props) {
 function Stat({ label, value, colors }: { label: string; value: string; colors: ReturnType<typeof useThemeColors> }) {
   return (
     <View style={statStyles.container}>
-      <Text style={[statStyles.value, { color: colors.text }]}>{value}</Text>
+      <Text style={[statStyles.value, { color: colors.text, fontFamily: fonts.heading }]}>{value}</Text>
       <Text style={[statStyles.label, { color: colors.textMuted }]}>{label}</Text>
     </View>
   );
@@ -228,7 +235,7 @@ function AjustarModal({
       onSalvo(atualizado);
       onClose();
     } catch (e: any) {
-      setErro(e?.response?.data?.nome?.[0] ?? "Nao foi possivel salvar.");
+      setErro(e?.response?.data?.nome?.[0] ?? "Não foi possível salvar.");
     } finally {
       setSalvando(false);
     }
@@ -238,38 +245,34 @@ function AjustarModal({
     <Modal visible={visivel} animationType="slide" transparent onRequestClose={onClose}>
       <View style={styles.backdrop}>
         <View style={[styles.sheet, { backgroundColor: colors.surface }]}>
-          <Text style={[styles.cardTitle, { color: colors.text }]}>Ajustar item</Text>
+          <Text style={[styles.cardTitle, { color: colors.text, fontFamily: fonts.heading }]}>Ajustar item</Text>
           <TextInput
-            style={[styles.input, { borderColor: colors.border, color: colors.text }]}
+            style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
             value={nome}
             onChangeText={setNome}
           />
           <View style={styles.row}>
             <TextInput
-              style={[styles.input, styles.flex, { borderColor: colors.border, color: colors.text }]}
+              style={[styles.input, styles.flex, { backgroundColor: colors.background, color: colors.text }]}
               keyboardType="numeric"
               value={qtd}
               onChangeText={setQtd}
             />
             <TextInput
-              style={[styles.input, styles.flex, { borderColor: colors.border, color: colors.text }]}
+              style={[styles.input, styles.flex, { backgroundColor: colors.background, color: colors.text }]}
               keyboardType="numeric"
               value={qtdMinima}
               onChangeText={setQtdMinima}
             />
           </View>
-          {erro && <Text style={{ color: colors.zerado }}>{erro}</Text>}
+          {erro && <Text style={{ color: colors.danger }}>{erro}</Text>}
           <View style={styles.row}>
-            <Pressable style={[styles.actionButton, styles.flex, { backgroundColor: colors.border }]} onPress={onClose}>
-              <Text style={{ color: colors.text }}>Cancelar</Text>
+            <Pressable style={[styles.modalButton, styles.flex, { backgroundColor: colors.background }]} onPress={onClose}>
+              <Text style={{ color: colors.text, fontFamily: fonts.semiBold }}>Cancelar</Text>
             </Pressable>
-            <Pressable
-              style={[styles.actionButton, styles.flex, { backgroundColor: colors.primary }]}
-              onPress={salvar}
-              disabled={salvando}
-            >
-              {salvando ? <ActivityIndicator color="#fff" /> : <Text style={styles.actionText}>Salvar</Text>}
-            </Pressable>
+            <View style={styles.flex}>
+              <Button label="Salvar" onPress={salvar} loading={salvando} />
+            </View>
           </View>
         </View>
       </View>
@@ -279,28 +282,30 @@ function AjustarModal({
 
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
-  container: { padding: 16, gap: 10, paddingBottom: 40 },
+  container: { padding: 20, gap: 10, paddingBottom: 40 },
   headerRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 },
-  nome: { fontSize: 22, fontWeight: "800", flexShrink: 1 },
+  nome: { fontSize: 24, flexShrink: 1 },
   categoria: { fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 },
   qtdLinha: { fontSize: 15, marginTop: 6 },
   actionsRow: { flexDirection: "row", gap: 10, marginTop: 14 },
-  actionButton: { flex: 1, borderRadius: 10, paddingVertical: 13, alignItems: "center" },
-  actionText: { color: "#fff", fontWeight: "700" },
-  secondaryRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 14 },
+  actionButton: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, borderRadius: 999, paddingVertical: 14 },
+  actionText: { fontSize: 15 },
+  secondaryRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 16 },
+  secondaryBtn: { flexDirection: "row", alignItems: "center", gap: 6 },
   link: { fontWeight: "600", fontSize: 14 },
-  card: { borderWidth: 1, borderRadius: 14, padding: 16, marginTop: 20, gap: 6 },
-  cardTitle: { fontSize: 16, fontWeight: "700", marginBottom: 4 },
+  card: { borderRadius: 22, padding: 18, marginTop: 20, gap: 6 },
+  cardTitle: { fontSize: 18, marginBottom: 4 },
   statsRow: { flexDirection: "row", justifyContent: "space-between" },
   backdrop: { flex: 1, backgroundColor: "#00000066", justifyContent: "flex-end" },
-  sheet: { borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, gap: 10 },
-  input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 15 },
+  sheet: { borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 22, gap: 12 },
+  input: { borderRadius: 999, paddingHorizontal: 16, paddingVertical: 12, fontSize: 15 },
+  modalButton: { borderRadius: 999, paddingVertical: 14, alignItems: "center" },
   row: { flexDirection: "row", gap: 10 },
   flex: { flex: 1 },
 });
 
 const statStyles = StyleSheet.create({
   container: { alignItems: "center", flex: 1 },
-  value: { fontSize: 18, fontWeight: "700" },
-  label: { fontSize: 11, marginTop: 2, textAlign: "center" },
+  value: { fontSize: 19 },
+  label: { fontSize: 11, marginTop: 4, textAlign: "center" },
 });

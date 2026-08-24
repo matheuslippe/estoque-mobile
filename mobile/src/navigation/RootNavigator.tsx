@@ -1,70 +1,96 @@
 import React from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useColorScheme } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { House, Package, ShoppingCart, RotateCcwClock } from "lucide-react-native";
 import { useAuth } from "../context/AuthContext";
 import { useThemeColors } from "../theme/colors";
+import { useAppColorScheme } from "../theme/scheme";
+import { fonts } from "../theme/fonts";
 import { LoginScreen } from "../screens/LoginScreen";
-import { HomeScreen } from "../screens/HomeScreen";
+import { DashboardScreen } from "../screens/DashboardScreen";
+import { DespensaScreen } from "../screens/DespensaScreen";
 import { ItemDetailScreen } from "../screens/ItemDetailScreen";
 import { ShoppingListScreen } from "../screens/ShoppingListScreen";
 import { HistoryScreen } from "../screens/HistoryScreen";
-import { EstoqueStackParamList, MainTabParamList } from "./types";
+import { InicioStackParamList, DespensaStackParamList, MainTabParamList } from "./types";
 
-const EstoqueStack = createNativeStackNavigator<EstoqueStackParamList>();
+const InicioStack = createNativeStackNavigator<InicioStackParamList>();
+const DespensaStack = createNativeStackNavigator<DespensaStackParamList>();
 const Tabs = createBottomTabNavigator<MainTabParamList>();
 
-function EstoqueStackNavigator() {
+function InicioStackNavigator() {
   const colors = useThemeColors();
   return (
-    <EstoqueStack.Navigator
+    <InicioStack.Navigator
       screenOptions={{
         headerStyle: { backgroundColor: colors.surface },
         headerTintColor: colors.text,
+        headerTitleStyle: { fontFamily: fonts.semiBold },
       }}
     >
-      <EstoqueStack.Screen name="Home" component={HomeScreen} options={{ title: "Estoque" }} />
-      <EstoqueStack.Screen name="ItemDetail" component={ItemDetailScreen} options={{ title: "Item" }} />
-    </EstoqueStack.Navigator>
+      <InicioStack.Screen name="Dashboard" component={DashboardScreen} options={{ headerShown: false }} />
+      <InicioStack.Screen name="ItemDetail" component={ItemDetailScreen} options={{ title: "Item" }} />
+    </InicioStack.Navigator>
+  );
+}
+
+function DespensaStackNavigator() {
+  const colors = useThemeColors();
+  return (
+    <DespensaStack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: colors.surface },
+        headerTintColor: colors.text,
+        headerTitleStyle: { fontFamily: fonts.semiBold },
+      }}
+    >
+      <DespensaStack.Screen name="Despensa" component={DespensaScreen} options={{ headerShown: false }} />
+      <DespensaStack.Screen name="ItemDetail" component={ItemDetailScreen} options={{ title: "Item" }} />
+    </DespensaStack.Navigator>
   );
 }
 
 function MainTabs() {
   const colors = useThemeColors();
-  const { logout } = useAuth();
+  const insets = useSafeAreaInsets();
   return (
     <Tabs.Navigator
       screenOptions={{
-        tabBarActiveTintColor: colors.primary,
+        headerShown: false,
+        tabBarActiveTintColor: colors.primaryStrong,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
+        tabBarLabelStyle: { fontFamily: fonts.semiBold, fontSize: 10.5 },
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
+          height: 58 + insets.bottom,
+          paddingTop: 8,
+          paddingBottom: insets.bottom + 6,
+        },
       }}
     >
-      <Tabs.Screen name="EstoqueTab" component={EstoqueStackNavigator} options={{ title: "Estoque", headerShown: false }} />
+      <Tabs.Screen
+        name="InicioTab"
+        component={InicioStackNavigator}
+        options={{ title: "Início", tabBarIcon: ({ color, size }) => <House size={size} color={color} strokeWidth={2.4} /> }}
+      />
+      <Tabs.Screen
+        name="DespensaTab"
+        component={DespensaStackNavigator}
+        options={{ title: "Despensa", tabBarIcon: ({ color, size }) => <Package size={size} color={color} strokeWidth={2.4} /> }}
+      />
       <Tabs.Screen
         name="Compras"
         component={ShoppingListScreen}
-        options={{
-          title: "Compras",
-          headerStyle: { backgroundColor: colors.surface },
-          headerTintColor: colors.text,
-        }}
+        options={{ title: "Compras", tabBarIcon: ({ color, size }) => <ShoppingCart size={size} color={color} strokeWidth={2.4} /> }}
       />
       <Tabs.Screen
         name="Historico"
         component={HistoryScreen}
-        options={{
-          title: "Historico",
-          headerStyle: { backgroundColor: colors.surface },
-          headerTintColor: colors.text,
-          headerRight: () => (
-            <Pressable onPress={logout} hitSlop={10}>
-              <Text style={{ color: colors.primary, fontWeight: "600" }}>Sair</Text>
-            </Pressable>
-          ),
-        }}
+        options={{ title: "Histórico", tabBarIcon: ({ color, size }) => <RotateCcwClock size={size} color={color} strokeWidth={2.4} /> }}
       />
     </Tabs.Navigator>
   );
@@ -73,7 +99,7 @@ function MainTabs() {
 export function RootNavigator() {
   const { loading, signedIn } = useAuth();
   const colors = useThemeColors();
-  const scheme = useColorScheme();
+  const scheme = useAppColorScheme();
   const navTheme = scheme === "dark" ? DarkTheme : DefaultTheme;
 
   if (loading) {

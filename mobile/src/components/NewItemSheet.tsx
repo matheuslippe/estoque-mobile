@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useThemeColors } from "../theme/colors";
+import { fonts } from "../theme/fonts";
+import { Button } from "./ui/Button";
 
 interface Props {
   visible: boolean;
@@ -42,7 +44,7 @@ export function NewItemSheet({ visible, onClose, onSubmit }: Props) {
       reset();
       onClose();
     } catch (e: any) {
-      setError(e?.response?.data?.nome?.[0] ?? "Nao foi possivel cadastrar o item.");
+      setError(e?.response?.data?.nome?.[0] ?? "Não foi possível cadastrar o item.");
     } finally {
       setSubmitting(false);
     }
@@ -52,19 +54,19 @@ export function NewItemSheet({ visible, onClose, onSubmit }: Props) {
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={styles.backdrop}>
         <View style={[styles.sheet, { backgroundColor: colors.surface }]}>
-          <Text style={[styles.title, { color: colors.text }]}>Novo item</Text>
+          <Text style={[styles.title, { color: colors.text, fontFamily: fonts.heading }]}>Novo item</Text>
 
           <TextInput
-            style={[styles.input, { borderColor: colors.border, color: colors.text }]}
+            style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
             placeholder="Nome"
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={colors.textFaint}
             value={nome}
             onChangeText={setNome}
           />
           <TextInput
-            style={[styles.input, { borderColor: colors.border, color: colors.text }]}
+            style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
             placeholder="Categoria (opcional)"
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={colors.textFaint}
             value={categoria}
             onChangeText={setCategoria}
           />
@@ -72,16 +74,16 @@ export function NewItemSheet({ visible, onClose, onSubmit }: Props) {
             <View style={styles.flex}>
               <Text style={[styles.label, { color: colors.textMuted }]}>Quantidade</Text>
               <TextInput
-                style={[styles.input, { borderColor: colors.border, color: colors.text }]}
+                style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
                 keyboardType="numeric"
                 value={qtd}
                 onChangeText={setQtd}
               />
             </View>
             <View style={styles.flex}>
-              <Text style={[styles.label, { color: colors.textMuted }]}>Minima</Text>
+              <Text style={[styles.label, { color: colors.textMuted }]}>Mínima</Text>
               <TextInput
-                style={[styles.input, { borderColor: colors.border, color: colors.text }]}
+                style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
                 keyboardType="numeric"
                 value={qtdMinima}
                 onChangeText={setQtdMinima}
@@ -89,25 +91,21 @@ export function NewItemSheet({ visible, onClose, onSubmit }: Props) {
             </View>
           </View>
 
-          {error && <Text style={styles.error}>{error}</Text>}
+          {error && <Text style={{ color: colors.danger, fontSize: 13 }}>{error}</Text>}
 
           <View style={styles.actions}>
             <Pressable
-              style={[styles.button, styles.cancel, { borderColor: colors.border }]}
+              style={[styles.cancelButton, { backgroundColor: colors.background }]}
               onPress={() => {
                 reset();
                 onClose();
               }}
             >
-              <Text style={{ color: colors.text }}>Cancelar</Text>
+              <Text style={{ color: colors.text, fontFamily: fonts.semiBold }}>Cancelar</Text>
             </Pressable>
-            <Pressable
-              style={[styles.button, { backgroundColor: colors.primary }]}
-              onPress={handleSubmit}
-              disabled={submitting}
-            >
-              {submitting ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Cadastrar</Text>}
-            </Pressable>
+            <View style={styles.flex}>
+              <Button label="Cadastrar" onPress={handleSubmit} loading={submitting} />
+            </View>
           </View>
         </View>
       </View>
@@ -117,15 +115,12 @@ export function NewItemSheet({ visible, onClose, onSubmit }: Props) {
 
 const styles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: "#00000066", justifyContent: "flex-end" },
-  sheet: { borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, gap: 10 },
-  title: { fontSize: 18, fontWeight: "700", marginBottom: 4 },
-  input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 15 },
+  sheet: { borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 22, gap: 12 },
+  title: { fontSize: 20, marginBottom: 4 },
+  input: { borderRadius: 999, paddingHorizontal: 16, paddingVertical: 12, fontSize: 15 },
   row: { flexDirection: "row", gap: 10 },
-  flex: { flex: 1, gap: 4 },
+  flex: { flex: 1, gap: 5 },
   label: { fontSize: 12 },
-  error: { color: "#DC2626", fontSize: 13 },
   actions: { flexDirection: "row", gap: 10, marginTop: 8 },
-  button: { flex: 1, borderRadius: 10, paddingVertical: 12, alignItems: "center" },
-  cancel: { borderWidth: 1 },
-  buttonText: { color: "#fff", fontWeight: "700" },
+  cancelButton: { flex: 1, borderRadius: 999, paddingVertical: 14, alignItems: "center" },
 });

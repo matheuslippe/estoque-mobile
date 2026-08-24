@@ -1,36 +1,25 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { StatusItem } from "../types";
-import { statusColor, useThemeColors } from "../theme/colors";
-
-const LABEL: Record<StatusItem, string> = {
-  ok: "OK",
-  baixo: "Baixo",
-  zerado: "Zerado",
-};
+import { STATUS_LABEL, useStatusStyle } from "../theme/colors";
+import { fonts } from "../theme/fonts";
+import { radius } from "../theme/tokens";
 
 export function StatusBadge({ status }: { status: StatusItem }) {
-  const colors = useThemeColors();
-  const color = statusColor(colors, status);
+  const style = useStatusStyle(status);
   return (
-    <View style={[styles.badge, { backgroundColor: color + "22", borderColor: color }]}>
-      <View style={[styles.dot, { backgroundColor: color }]} />
-      <Text style={[styles.text, { color }]}>{LABEL[status]}</Text>
-    </View>
+    <Text style={[styles.badge, { backgroundColor: style.bg, color: style.fg }]}>{STATUS_LABEL[status]}</Text>
   );
 }
 
 const styles = StyleSheet.create({
   badge: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 8,
+    fontFamily: fonts.bold,
+    fontSize: 10.5,
+    paddingHorizontal: 9,
     paddingVertical: 3,
-    borderRadius: 12,
-    borderWidth: 1,
-    gap: 5,
+    borderRadius: radius.pill,
+    overflow: "hidden",
     alignSelf: "flex-start",
   },
-  dot: { width: 6, height: 6, borderRadius: 3 },
-  text: { fontSize: 12, fontWeight: "600" },
 });
