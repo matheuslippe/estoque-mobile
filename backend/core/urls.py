@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.permissions import AllowAny
@@ -23,6 +24,7 @@ class OpenSpectacularSwaggerView(SpectacularSwaggerView):
 
 
 urlpatterns = [
+    path("health/", lambda request: JsonResponse({"status": "ok"}), name="health"),
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
     path("api/lista-compras/", ListaComprasView.as_view(), name="lista-compras"),

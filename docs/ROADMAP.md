@@ -85,10 +85,11 @@ estoque-mobile/
 
 ## Fase 5 — Deploy (2–3 dias)
 
-- [ ] Backend: Railway, Render ou Fly.io (Postgres gerenciado incluso nos três)
-- [ ] Segredos via variáveis de ambiente (`python-decouple` ou `django-environ`) — nunca commitar chaves
-- [ ] Mobile: build com EAS Build; distribuir via TestFlight (iOS) e Internal Testing (Play Console)
-- [ ] HTTPS/domínio para a API
+- [x] Backend: Railway escolhido. Código pronto (settings de produção, `Procfile`, WhiteNoise, health check em `/health/`) — guia passo a passo em [docs/DEPLOY.md](DEPLOY.md)
+- [x] Segredos via variáveis de ambiente (`django-environ`) — já era assim desde a Fase 1, nada commitado
+- [ ] Pendente do usuário: criar a conta no Railway, conectar o repo, colar as variáveis de ambiente e gerar o domínio (passos 1–6 do DEPLOY.md) — envolve conta/pagamento, não posso fazer por você
+- [ ] Mobile: build com EAS Build; distribuir via TestFlight (iOS) e Internal Testing (Play Console) — não iniciado, precisa de conta Expo/Apple/Google
+- [x] HTTPS/domínio para a API — resolvido automaticamente pelo domínio gerado no Railway (passo 4 do DEPLOY.md), nenhuma config extra necessária
 
 ## Fase 6 — Outras plataformas (só depois do mobile validado)
 
