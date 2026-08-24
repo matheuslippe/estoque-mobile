@@ -91,16 +91,16 @@ estoque-mobile/
 
 ## Fase 5 — Deploy (2–3 dias)
 
-- [x] Backend: Railway escolhido. Código pronto (settings de produção, `Procfile`, WhiteNoise, health check em `/health/`) — guia passo a passo em [docs/DEPLOY.md](DEPLOY.md)
+- [x] Backend: deployado de verdade no Railway (`estoque-mobile-production.up.railway.app`) — dois serviços (web + worker do bot) + Postgres, todos "Online" e validados. Guia em [docs/DEPLOY.md](DEPLOY.md)
 - [x] Segredos via variáveis de ambiente (`django-environ`) — já era assim desde a Fase 1, nada commitado
-- [ ] Pendente do usuário: criar a conta no Railway, conectar o repo, colar as variáveis de ambiente e gerar o domínio (passos 1–6 do DEPLOY.md) — envolve conta/pagamento, não posso fazer por você
-- [x] Mobile: build com EAS Build — `mobile/eas.json` (perfis development/preview/production) e `app.json` configurados (bundle id, `userInterfaceStyle` corrigido de "light" pra "automatic" — estava ignorando o tema do sistema). Guia em [docs/MOBILE_DEPLOY.md](MOBILE_DEPLOY.md)
-- [ ] Pendente do usuário: criar conta Expo (`eas login`, `eas build:configure`), rodar os builds, e — se quiser publicar de verdade — conta Apple Developer Program (US$99/ano) e Google Play Console (US$25 taxa única) pra TestFlight/Internal Testing
-- [x] HTTPS/domínio para a API — resolvido automaticamente pelo domínio gerado no Railway (passo 4 do DEPLOY.md), nenhuma config extra necessária
+- [x] Mobile: primeiro build publicado de verdade — `eas build --platform android --profile preview`, APK standalone instalável direto (sem Play Store), apontando pro backend em produção. Guia em [docs/MOBILE_DEPLOY.md](MOBILE_DEPLOY.md)
+- [ ] Pendente do usuário: build `production` + submissão nas lojas de verdade (TestFlight/Play Console Internal Testing) — precisa de conta Apple Developer Program (US$99/ano) e Google Play Console (US$25 taxa única)
+- [x] HTTPS/domínio para a API — domínio gerado automaticamente pelo Railway, com HTTPS, sem config extra
+- [x] Web (Fase 6) também publicado no Vercel — ver Fase 6 abaixo
 
 ## Fase 6 — Outras plataformas (só depois do mobile validado)
 
-- [x] Web: dashboard em Next.js consumindo a mesma API (visão gerencial: resumo, gráfico "mais consumidos" agregado, grade de itens, detalhe com análise, compras, histórico com filtros)
+- [x] Web: dashboard em Next.js consumindo a mesma API (visão gerencial: resumo, gráfico "mais consumidos" agregado, grade de itens, detalhe com análise, compras, histórico com filtros) — publicado de verdade em `web-jade-three-89.vercel.app`
 - [x] PWA instalável a partir do dashboard web em vez de investir em Electron — mesmo esforço, mais alcance (manifest + service worker cacheando o app shell, ícones gerados sem assets externos)
 - [x] Extras: exportação de relatórios em CSV (lista de compras e histórico)
 - [ ] Extras não feitos: exportação em PDF, múltiplos usuários/famílias com permissões por perfil (o backend ainda não tem esse conceito)

@@ -141,8 +141,14 @@ python manage.py run_telegram_bot
 - **Dashboard web (Vercel)**: `https://web-jade-three-89.vercel.app` — projeto
   `matheuslippe6-9418s-projects/web`. `NEXT_PUBLIC_API_URL` aponta pro Railway
   acima; `CORS_ALLOWED_ORIGINS` no backend já libera esse domínio.
-- **Mobile**: nenhum build publicado ainda (EAS configurado, não executado —
-  ver [docs/MOBILE_DEPLOY.md](docs/MOBILE_DEPLOY.md)).
+- **Mobile (EAS)**: primeiro build publicado — Android, perfil `preview` (APK
+  standalone, instalação direta, sem Play Store), aponta pro backend do
+  Railway acima. Build `195e8c93-502f-4a19-acfc-fb29b9c1af38`, SDK 57.
+  Página: https://expo.dev/accounts/matheus_lippe/projects/estoque-mobile/builds/195e8c93-502f-4a19-acfc-fb29b9c1af38.
+  Pra gerar um novo build: `cd mobile && eas build --platform android --profile preview`
+  (guia completo em [docs/MOBILE_DEPLOY.md](docs/MOBILE_DEPLOY.md)). iOS e
+  builds de `production` (pra loja) ainda não foram feitos — precisam de conta
+  Apple Developer/Play Console.
 
 Pegadinhas descobertas fazendo o primeiro deploy de verdade (já corrigidas no
 código, mas bom saber se aparecer de novo):
@@ -199,7 +205,8 @@ código, mas bom saber se aparecer de novo):
 - **Multi-usuário/família com permissões por perfil** — mencionado como extra da Fase 6, não
   implementado. O backend não tem conceito de "perfil"/"família", só usuários Django comuns.
 - **Exportação em PDF** — só CSV foi implementado (histórico e lista de compras, no dashboard web).
-- **Deploy real** — código pronto pros dois (`docs/DEPLOY.md` pro backend no Railway,
-  `docs/MOBILE_DEPLOY.md` pro mobile via EAS Build), mas nenhum dos dois foi executado de fato —
-  depende de contas do usuário (Railway, Expo, e opcionalmente Apple Developer/Play Console).
-- **iOS** nunca foi testado nesta sessão — só validamos Android via Expo Go e o preview web.
+- **Publicação nas lojas** — backend (Railway), dashboard web (Vercel) e um build Android `preview`
+  (EAS, instalação direta) já estão no ar (ver seção "Produção" acima). Falta: build `production` de
+  verdade + submissão pra Play Store/TestFlight — precisa de conta Apple Developer Program (US$99/ano)
+  e Google Play Console (US$25 taxa única), que são do usuário.
+- **iOS** nunca foi testado nesta sessão — só validamos Android (Expo Go + build EAS) e o preview web.
