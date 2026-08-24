@@ -16,8 +16,11 @@ estoque-mobile/
 │   ├── bots/             # integração Telegram + Gemini
 │   └── manage.py
 ├── mobile/               # app Expo/React Native
+├── web/                  # dashboard Next.js (PWA)
 └── docs/
-    └── ROADMAP.md        # plano completo do projeto, por fases
+    ├── ROADMAP.md        # plano completo do projeto, por fases
+    ├── SPEC_BACKEND.md   # regras de negócio migradas do projeto original
+    └── DEPLOY.md         # guia de deploy do backend (Railway)
 ```
 
 Veja o plano completo em [docs/ROADMAP.md](docs/ROADMAP.md).
@@ -26,4 +29,5 @@ Veja o plano completo em [docs/ROADMAP.md](docs/ROADMAP.md).
 
 - **Backend:** Django + Django REST Framework, JWT (`djangorestframework-simplejwt`), PostgreSQL
 - **Mobile:** React Native com Expo
+- **Web:** Next.js (App Router, TypeScript, Tailwind), instalável como PWA
 - **Bot:** Telegram + Gemini (IA para comandos por texto/áudio)

@@ -93,9 +93,10 @@ estoque-mobile/
 
 ## Fase 6 — Outras plataformas (só depois do mobile validado)
 
-- [ ] Web: dashboard em React/Next.js consumindo a mesma API (visão gerencial, gráficos maiores)
-- [ ] PWA instalável a partir do dashboard web em vez de investir em Electron — mesmo esforço, mais alcance
-- [ ] Extras: exportação de relatórios (PDF/CSV), múltiplos usuários/famílias com permissões por perfil
+- [x] Web: dashboard em Next.js consumindo a mesma API (visão gerencial: resumo, gráfico "mais consumidos" agregado, grade de itens, detalhe com análise, compras, histórico com filtros)
+- [x] PWA instalável a partir do dashboard web em vez de investir em Electron — mesmo esforço, mais alcance (manifest + service worker cacheando o app shell, ícones gerados sem assets externos)
+- [x] Extras: exportação de relatórios em CSV (lista de compras e histórico)
+- [ ] Extras não feitos: exportação em PDF, múltiplos usuários/famílias com permissões por perfil (o backend ainda não tem esse conceito)
 
 ## Dicas para o portfólio
 

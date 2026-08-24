@@ -1,0 +1,17 @@
+import { api } from "./api";
+import { ItemEmFalta } from "./types";
+
+export async function listaCompras() {
+  const { data } = await api.get<ItemEmFalta[]>("/lista-compras/");
+  return data;
+}
+
+export async function reporFaltantes() {
+  const { data } = await api.post<{ detail: string; repostos: number }>("/reposicao-lote/");
+  return data;
+}
+
+export async function notificarListaCompras() {
+  const { data } = await api.post<{ detail: string; enviado: boolean }>("/lista-compras/notificar/");
+  return data;
+}
