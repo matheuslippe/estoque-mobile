@@ -88,7 +88,8 @@ estoque-mobile/
 - [x] Backend: Railway escolhido. Código pronto (settings de produção, `Procfile`, WhiteNoise, health check em `/health/`) — guia passo a passo em [docs/DEPLOY.md](DEPLOY.md)
 - [x] Segredos via variáveis de ambiente (`django-environ`) — já era assim desde a Fase 1, nada commitado
 - [ ] Pendente do usuário: criar a conta no Railway, conectar o repo, colar as variáveis de ambiente e gerar o domínio (passos 1–6 do DEPLOY.md) — envolve conta/pagamento, não posso fazer por você
-- [ ] Mobile: build com EAS Build; distribuir via TestFlight (iOS) e Internal Testing (Play Console) — não iniciado, precisa de conta Expo/Apple/Google
+- [x] Mobile: build com EAS Build — `mobile/eas.json` (perfis development/preview/production) e `app.json` configurados (bundle id, `userInterfaceStyle` corrigido de "light" pra "automatic" — estava ignorando o tema do sistema). Guia em [docs/MOBILE_DEPLOY.md](MOBILE_DEPLOY.md)
+- [ ] Pendente do usuário: criar conta Expo (`eas login`, `eas build:configure`), rodar os builds, e — se quiser publicar de verdade — conta Apple Developer Program (US$99/ano) e Google Play Console (US$25 taxa única) pra TestFlight/Internal Testing
 - [x] HTTPS/domínio para a API — resolvido automaticamente pelo domínio gerado no Railway (passo 4 do DEPLOY.md), nenhuma config extra necessária
 
 ## Fase 6 — Outras plataformas (só depois do mobile validado)
