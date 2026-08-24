@@ -30,16 +30,22 @@ estoque-mobile/
 │   ├── bots/            # integração Telegram + Gemini
 │   └── manage.py
 ├── mobile/               # app Expo/React Native
+├── web/                  # dashboard Next.js (PWA) — Fase 6
 └── docs/
     └── ROADMAP.md        # este arquivo, versionado no repo
 ```
+
+> Estrutura final tem também `docs/SPEC_BACKEND.md`, `docs/DEPLOY.md`,
+> `docs/MOBILE_DEPLOY.md`, e um `CLAUDE.md` na raiz com o contexto operacional
+> completo (como rodar cada parte, pegadinhas da máquina, gaps pendentes) —
+> comece por ali em qualquer conversa nova.
 
 ## Fase 0 — Planejamento (1–2 dias)
 
 - [x] Ler `db.py` do projeto atual e listar toda regra de negócio (níveis de estoque, cálculo de lista de compras, reposição em lote, análise de consumo) — isso vira a especificação do novo backend → [docs/SPEC_BACKEND.md](SPEC_BACKEND.md)
 - [x] Definir o MVP: quais telas o mobile precisa ter no primeiro release → mantido igual à lista da Fase 3 (Início, Detalhe do item, Lista de compras, Histórico, Análise)
-- [ ] Criar o repositório público `estoque-mobile` no GitHub (repo local já iniciado com git; falta criar o remoto e dar push)
-- [ ] Criar um board simples (GitHub Projects ou Issues) para quebrar as fases abaixo em tarefas menores
+- [x] Criar o repositório público `estoque-mobile` no GitHub → [github.com/matheuslippe/estoque-mobile](https://github.com/matheuslippe/estoque-mobile), todas as fases commitadas lá
+- [ ] Criar um board simples (GitHub Projects ou Issues) para quebrar as fases abaixo em tarefas menores — não feito, não bloqueou o desenvolvimento
 
 ## Fase 1 — Backend Django: fundação (2–3 dias)
 
@@ -73,7 +79,7 @@ estoque-mobile/
 - [x] Histórico com filtro por item e período
 - [x] Gráficos de consumo (`victory-native` ou `react-native-chart-kit`) — `react-native-chart-kit`
 - [x] Tema claro/escuro seguindo o sistema do celular
-- [ ] Testar em Android e iOS via Expo Go — validado via preview web (login, cards, detalhe/análise, retirar, lista de compras, reposição em lote, histórico, logout); falta testar num device real com Expo Go
+- [x] Testar em Android via Expo Go — validado num device Android real (login com usuário `matheus`, navegação funcionando); testado antes via preview web também. **iOS ainda não foi testado.**
 
 ## Fase 4 — Bot + IA (em paralelo à Fase 3, ou logo depois) (3–5 dias)
 
@@ -81,7 +87,7 @@ estoque-mobile/
 - [x] Migrar a função que interpreta texto/áudio via Gemini para um módulo reutilizável — `backend/bots/gemini.py`, no SDK atual `google-genai` (o `google-generativeai` usado no projeto original foi descontinuado)
 - [x] Endpoint/webhook dedicado para o Telegram avisar quando um item bate o mínimo — automático em `POST /api/itens/{id}/movimentar/` (só na transição ok→baixo/zerado) + manual em `POST /api/lista-compras/notificar/`
 - [ ] Opcional: complementar (ou substituir) o Telegram por notificação push nativa no mobile (`expo-notifications`) — não feito
-- [ ] Pendente do usuário: gerar `TELEGRAM_BOT_TOKEN` (via @BotFather) e `GEMINI_API_KEY`, preencher no `backend/.env` e rodar `python manage.py run_telegram_bot` pra testar com o Telegram de verdade
+- [x] Testado de verdade: usuário preencheu `TELEGRAM_BOT_TOKEN`/`GEMINI_API_KEY`/`TELEGRAM_CHAT_IDS` no `.env` e rodou o bot contra o Telegram real — funcionando (viu um 503 pontual do Gemini por sobrecarga do lado do Google, não bug nosso)
 
 ## Fase 5 — Deploy (2–3 dias)
 
@@ -98,6 +104,16 @@ estoque-mobile/
 - [x] PWA instalável a partir do dashboard web em vez de investir em Electron — mesmo esforço, mais alcance (manifest + service worker cacheando o app shell, ícones gerados sem assets externos)
 - [x] Extras: exportação de relatórios em CSV (lista de compras e histórico)
 - [ ] Extras não feitos: exportação em PDF, múltiplos usuários/famílias com permissões por perfil (o backend ainda não tem esse conceito)
+
+## Gaps identificados além do roadmap original
+
+Comparando com o app original e o uso real, ficaram pendentes (nenhum
+construído ainda): filtro por categoria no mobile Home, um endpoint de
+dashboard de consumo geral (a análise hoje é só por item), notificação push
+nativa no mobile, e multi-usuário/família com permissões. Lista completa e
+atualizada na seção "O que falta" do [CLAUDE.md](../CLAUDE.md) na raiz do
+repo — esse arquivo é carregado automaticamente pelo Claude Code em toda
+conversa nova, então é o lugar certo pra manter isso em dia.
 
 ## Dicas para o portfólio
 

@@ -23,7 +23,10 @@ estoque-mobile/
     └── DEPLOY.md         # guia de deploy do backend (Railway)
 ```
 
-Veja o plano completo em [docs/ROADMAP.md](docs/ROADMAP.md).
+Veja o plano completo em [docs/ROADMAP.md](docs/ROADMAP.md). Pra contexto
+operacional (como rodar cada parte localmente, pegadinhas conhecidas, o que
+ainda falta), veja [CLAUDE.md](CLAUDE.md) — é carregado automaticamente pelo
+Claude Code em toda conversa nova sobre este repositório.
 
 ## Stack
 
