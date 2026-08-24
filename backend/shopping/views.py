@@ -1,10 +1,13 @@
 from django.db import transaction
-from django.db.models import F
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from bots.formatting import texto_lista_compras
+from bots.notify import enviar_telegram
 from estoque.models import Item
 from historico.models import Movimentacao
+
+from .views_helpers import itens_em_falta_queryset, serializar_lista_compras
 
 
 class ListaComprasView(APIView):
@@ -12,20 +15,21 @@ class ListaComprasView(APIView):
     quantidade sugerida para voltar ao nivel seguro (2x o minimo)."""
 
     def get(self, request):
-        itens = Item.objects.filter(qtd__lte=F("qtd_minima")).order_by("qtd", "categoria", "nome")
-        data = [
-            {
-                "id": item.id,
-                "nome": item.nome,
-                "categoria": item.categoria,
-                "qtd": item.qtd,
-                "qtd_minima": item.qtd_minima,
-                "qtd_a_comprar": item.qtd_a_comprar,
-                "zerado": item.qtd == 0,
-            }
-            for item in itens
-        ]
-        return Response(data)
+        return Response(serializar_lista_compras(itens_em_falta_queryset()))
+
+
+class NotificarListaComprasView(APIView):
+    """POST /api/lista-compras/notificar/ — dispara a lista de compras atual
+    pro Telegram sob demanda (gatilho manual do app, ou de um job agendado)."""
+
+    def post(self, request):
+        itens = serializar_lista_compras(itens_em_falta_queryset())
+        texto = texto_lista_compras(itens)
+        if not texto:
+            return Response({"detail": "Nada a comprar, nao enviei nada.", "enviado": False})
+
+        enviar_telegram(texto)
+        return Response({"detail": "Lista de compras enviada pro Telegram.", "enviado": True})
 
 
 class ReposicaoLoteView(APIView):
@@ -34,7 +38,7 @@ class ReposicaoLoteView(APIView):
 
     def post(self, request):
         with transaction.atomic():
-            faltantes = list(Item.objects.select_for_update().filter(qtd__lte=F("qtd_minima")))
+            faltantes = list(Item.objects.select_for_update().filter(pk__in=itens_em_falta_queryset()))
             if not faltantes:
                 return Response({"detail": "Nenhum item precisa de reposicao.", "repostos": 0})
 

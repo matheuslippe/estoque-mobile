@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'estoque',
     'historico',
     'shopping',
+    'bots',
 ]
 
 MIDDLEWARE = [
@@ -157,6 +158,20 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API do gestor de estoque (itens, movimentacoes, lista de compras, analise de consumo).',
     'VERSION': '1.0.0',
 }
+
+
+# Bot do Telegram + Gemini (app bots/)
+TELEGRAM_BOT_TOKEN = env('TELEGRAM_BOT_TOKEN', default='')
+# Sem allowlist, qualquer pessoa que descubra o bot mexe no estoque - avisos
+# de nivel minimo tambem so saem pra esses chats.
+TELEGRAM_CHAT_IDS = [c for c in env.list('TELEGRAM_CHAT_IDS', default=[]) if c]
+GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
+
+# Credenciais que o bot usa pra autenticar na propria API (via JWT), em vez
+# de acessar o banco direto - mantem as regras de negocio num lugar so.
+BOT_API_BASE_URL = env('BOT_API_BASE_URL', default='http://127.0.0.1:8000/api')
+BOT_API_USERNAME = env('BOT_API_USERNAME', default='bot')
+BOT_API_PASSWORD = env('BOT_API_PASSWORD', default='')
 
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
 CORS_ALLOW_ALL_ORIGINS = DEBUG

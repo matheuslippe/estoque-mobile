@@ -84,6 +84,7 @@ class ItemViewSet(viewsets.ModelViewSet):
 
         with transaction.atomic():
             item = Item.objects.select_for_update().get(pk=self.get_object().pk)
+            estava_ok = item.qtd > item.qtd_minima
             if tipo == Movimentacao.ENTRADA:
                 nova = item.qtd + qtd
             else:
@@ -106,7 +107,15 @@ class ItemViewSet(viewsets.ModelViewSet):
                 obs=obs,
             )
 
-        return Response(ItemSerializer(item).data)
+        dados = ItemSerializer(item).data
+        # Avisa no Telegram so na transicao ok -> baixo/zerado, pra nao
+        # notificar de novo a cada nova saida enquanto ja esta em falta.
+        if tipo == Movimentacao.SAIDA and estava_ok and item.qtd <= item.qtd_minima:
+            from bots.notify import avisar_nivel_minimo
+
+            avisar_nivel_minimo(dados)
+
+        return Response(dados)
 
     @action(detail=True, methods=["get"])
     def analise(self, request, pk=None):

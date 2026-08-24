@@ -77,10 +77,11 @@ estoque-mobile/
 
 ## Fase 4 — Bot + IA (em paralelo à Fase 3, ou logo depois) (3–5 dias)
 
-- [ ] Reescrever o bot do Telegram para consumir a API Django (em vez de acessar o SQLite direto)
-- [ ] Migrar a função que interpreta texto/áudio via Gemini para um módulo reutilizável
-- [ ] Endpoint/webhook dedicado para o Telegram avisar quando um item bate o mínimo
-- [ ] Opcional: complementar (ou substituir) o Telegram por notificação push nativa no mobile (`expo-notifications`)
+- [x] Reescrever o bot do Telegram para consumir a API Django (em vez de acessar o SQLite direto) — `backend/bots/api_client.py` (JWT, refresh automatico em 401), validado ponta a ponta contra a API real
+- [x] Migrar a função que interpreta texto/áudio via Gemini para um módulo reutilizável — `backend/bots/gemini.py`, no SDK atual `google-genai` (o `google-generativeai` usado no projeto original foi descontinuado)
+- [x] Endpoint/webhook dedicado para o Telegram avisar quando um item bate o mínimo — automático em `POST /api/itens/{id}/movimentar/` (só na transição ok→baixo/zerado) + manual em `POST /api/lista-compras/notificar/`
+- [ ] Opcional: complementar (ou substituir) o Telegram por notificação push nativa no mobile (`expo-notifications`) — não feito
+- [ ] Pendente do usuário: gerar `TELEGRAM_BOT_TOKEN` (via @BotFather) e `GEMINI_API_KEY`, preencher no `backend/.env` e rodar `python manage.py run_telegram_bot` pra testar com o Telegram de verdade
 
 ## Fase 5 — Deploy (2–3 dias)
 

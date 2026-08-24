@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 
 from estoque.models import Item
@@ -57,3 +59,23 @@ class TestReposicaoLote:
         assert resp.status_code == 200
         assert resp.data["repostos"] == 0
         assert not Movimentacao.objects.exists()
+
+
+@pytest.mark.django_db
+class TestNotificarListaCompras:
+    def test_envia_texto_formatado_quando_ha_itens_em_falta(self, api_client):
+        Item.objects.create(nome="Feijao", categoria="Comida", qtd=1, qtd_minima=2)
+        with patch("shopping.views.enviar_telegram") as enviar:
+            resp = api_client.post("/api/lista-compras/notificar/")
+        assert resp.status_code == 200
+        assert resp.data["enviado"] is True
+        enviar.assert_called_once()
+        assert "Feijao" in enviar.call_args[0][0]
+
+    def test_nao_envia_quando_nada_em_falta(self, api_client):
+        Item.objects.create(nome="Arroz", categoria="Comida", qtd=5, qtd_minima=2)
+        with patch("shopping.views.enviar_telegram") as enviar:
+            resp = api_client.post("/api/lista-compras/notificar/")
+        assert resp.status_code == 200
+        assert resp.data["enviado"] is False
+        enviar.assert_not_called()

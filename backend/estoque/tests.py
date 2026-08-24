@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 import pytest
 from django.utils import timezone
@@ -55,6 +56,28 @@ class TestMovimentar:
         resp = api_client.post(f"/api/itens/{item.id}/movimentar/", {"tipo": "SAIDA", "qtd": 1})
         assert resp.status_code == 400
         assert not Movimentacao.objects.filter(item=item).exists()
+
+    def test_saida_que_cruza_para_baixo_dispara_aviso_telegram(self, api_client):
+        item = Item.objects.create(nome="Leite", categoria="Comida", qtd=3, qtd_minima=2)
+        with patch("bots.notify.avisar_nivel_minimo") as aviso:
+            resp = api_client.post(f"/api/itens/{item.id}/movimentar/", {"tipo": "SAIDA", "qtd": 2})
+        assert resp.status_code == 200
+        aviso.assert_called_once()
+        assert aviso.call_args[0][0]["nome"] == "Leite"
+
+    def test_saida_que_ja_estava_baixo_nao_repete_aviso(self, api_client):
+        item = Item.objects.create(nome="Leite", categoria="Comida", qtd=2, qtd_minima=2)
+        with patch("bots.notify.avisar_nivel_minimo") as aviso:
+            resp = api_client.post(f"/api/itens/{item.id}/movimentar/", {"tipo": "SAIDA", "qtd": 1})
+        assert resp.status_code == 200
+        aviso.assert_not_called()
+
+    def test_entrada_nunca_dispara_aviso(self, api_client):
+        item = Item.objects.create(nome="Leite", categoria="Comida", qtd=1, qtd_minima=2)
+        with patch("bots.notify.avisar_nivel_minimo") as aviso:
+            resp = api_client.post(f"/api/itens/{item.id}/movimentar/", {"tipo": "ENTRADA", "qtd": 5})
+        assert resp.status_code == 200
+        aviso.assert_not_called()
 
 
 @pytest.mark.django_db
