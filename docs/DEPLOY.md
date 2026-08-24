@@ -9,7 +9,8 @@ fazer: criar a conta, conectar o repositório e colar os segredos no painel.
 1. Entre em [railway.app](https://railway.app) e crie uma conta (dá pra usar login do GitHub).
 2. **New Project → Deploy from GitHub repo** → selecione `matheuslippe/estoque-mobile`.
 3. O Railway vai tentar buildar a raiz do repo — corrija isso: abra o serviço criado → **Settings → Root Directory** → digite `backend`.
-4. Em **Settings → Deploy**, confirme que o *Builder* é Nixpacks (detecta Python sozinho a partir do `requirements.txt`).
+4. O builder é o **Railpack** (padrão atual do Railway) — detecta Python sozinho a partir do
+   `.python-version` + `requirements.txt` + `Procfile`, não precisa mexer em nada aqui.
 
 ## 2. Adicionar o Postgres
 
@@ -47,24 +48,45 @@ preencha `BOT_API_BASE_URL` com esse domínio.
 
 ## 5. Primeiro deploy
 
-O deploy roda automaticamente a cada push na `main`. Na primeira vez, o
-`Procfile` cuida de tudo:
+O deploy roda automaticamente a cada push na `main`. **O Railway não tem a fase
+`release:` do Heroku** — ele ignora essa linha do `Procfile` — então `migrate`
+e `collectstatic` ficam encadeados dentro do próprio comando `web:`, rodando
+toda vez que o container sobe (idempotente, então é seguro rodar de novo em
+todo restart):
 
 ```
-release: python manage.py migrate --noinput && python manage.py collectstatic --noinput
-web: gunicorn core.wsgi --bind 0.0.0.0:$PORT --log-file -
+web: python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn core.wsgi --bind 0.0.0.0:$PORT --log-file -
 ```
 
 Confirme que subiu: `https://<seu-dominio>/health/` deve responder `{"status": "ok"}`.
+Se você importou este projeto **antes** dessa correção, o banco pode ter ficado
+sem tabelas (migrate nunca rodou) — veja o passo 6 pra rodar manualmente uma vez.
 
 ## 6. Criar o superusuário e o usuário do bot em produção
 
-Instale a [Railway CLI](https://docs.railway.app/guides/cli), rode `railway login`
-e `railway link` (aponte pro serviço do backend), depois:
+Instale a [Railway CLI](https://docs.railway.app/guides/cli) e rode `railway login`.
+
+**`railway run` não funciona pra comandos Django aqui** — ele roda o comando
+*localmente*, só injetando as variáveis de ambiente de produção; como
+`DATABASE_URL` aponta pro host interno `postgres.railway.internal` (só
+resolve de dentro da rede do Railway), a conexão falha. Use `railway ssh` pra
+rodar dentro do container de verdade:
 
 ```bash
-railway run python manage.py createsuperuser
-railway run python manage.py criar_usuario_bot
+cd backend
+railway link                          # escolha o projeto/ambiente na primeira vez
+railway ssh --service estoque-mobile "python manage.py createsuperuser"
+railway ssh --service estoque-mobile "python manage.py criar_usuario_bot"
+```
+
+Se der "No SSH keys found" / "No registered SSH keys found": gere uma
+(`ssh-keygen -t ed25519`) e registre com `railway ssh keys add`. Se der "Host
+key verification failed" num terminal não-interativo: adicione ao
+`~/.ssh/config`:
+
+```
+Host *
+    StrictHostKeyChecking accept-new
 ```
 
 ## 7. Bot do Telegram como um segundo serviço (opcional)
@@ -74,6 +96,13 @@ Se quiser o bot rodando 24/7 em produção (não só na sua máquina):
 1. No mesmo projeto Railway, **New → GitHub Repo** de novo, mesmo repositório.
 2. **Root Directory**: `backend`.
 3. **Settings → Deploy → Custom Start Command**: `python manage.py run_telegram_bot`
+   — **isso é obrigatório e só dá pra fazer pelo painel** (a CLI não tem comando
+   pra setar isso). Sem preencher esse campo, o serviço roda o `web:` do
+   `Procfile` (gunicorn) por padrão — sobe, aparece "Online" no dashboard, mas
+   **não é o bot** e não vai responder nada no Telegram. Se o serviço estiver
+   "Online" mas o bot não responde, confira `railway logs --service bot-telegram`:
+   se aparecer `gunicorn`/`Listening at: http://0.0.0.0:8080` em vez de
+   `Bot iniciado. API: ...`, é esse o problema.
 4. Copie as mesmas variáveis de ambiente do serviço web (ou use "Add Reference" pra reusar).
 5. Esse serviço não precisa de domínio público — é só um worker rodando em loop.
 

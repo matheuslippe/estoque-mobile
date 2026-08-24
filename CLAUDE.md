@@ -133,6 +133,35 @@ python manage.py run_telegram_bot
 - Erros `503 UNAVAILABLE` do Gemini são sobrecarga do lado do Google (visto acontecer de verdade
   em teste real), não bug nosso — só re-tentar.
 
+## Produção (Railway)
+
+Backend em produção: `https://estoque-mobile-production.up.railway.app` — dois
+serviços (`estoque-mobile` = web, `bot-telegram` = worker) + Postgres, todos
+no projeto `estoquemobile`. Guia completo: [docs/DEPLOY.md](docs/DEPLOY.md).
+
+Pegadinhas descobertas fazendo o primeiro deploy de verdade (já corrigidas no
+código, mas bom saber se aparecer de novo):
+
+- **Railway não roda a fase `release:` do Procfile** (isso é convenção do
+  Heroku). `migrate`/`collectstatic` agora ficam encadeados dentro do próprio
+  comando `web:` do `Procfile`, então rodam a cada boot do container.
+- **`railway run <comando>` não serve pra rodar Django** — ele executa
+  *localmente*, só injetando as env vars de produção; como `DATABASE_URL`
+  aponta pro host interno `postgres.railway.internal` (só resolve de dentro
+  da rede do Railway), a conexão falha. Use `railway ssh --service
+  estoque-mobile "python manage.py <comando>"` — isso roda dentro do
+  container de verdade. Precisa de uma chave SSH registrada
+  (`ssh-keygen -t ed25519` + `railway ssh keys add`) e, em terminal
+  não-interativo, `StrictHostKeyChecking accept-new` no `~/.ssh/config`
+  (senão trava em "Host key verification failed").
+- **O serviço do bot só roda o bot se o Custom Start Command estiver setado**
+  no painel (Settings → Deploy → Custom Start Command →
+  `python manage.py run_telegram_bot`). Sem isso, ele roda o `web:` padrão do
+  Procfile (gunicorn) — sobe, aparece "Online", mas não é o bot. Não tem como
+  setar isso pela CLI. Se o bot não responder no Telegram, `railway logs
+  --service bot-telegram` — se aparecer `gunicorn`/`Listening at:` em vez de
+  `Bot iniciado. API: ...`, é esse o problema.
+
 ## Pegadinhas gerais desta máquina (Windows)
 
 - Terminal principal é Git Bash; PowerShell só quando precisa de `Get-CimInstance`/`Get-NetIPConfiguration`/

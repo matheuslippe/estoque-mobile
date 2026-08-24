@@ -17,13 +17,13 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://SEU-DOMINIO-RAILWAY.up.railway.app/api"
+        "EXPO_PUBLIC_API_URL": "https://estoque-mobile-production.up.railway.app/api"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://SEU-DOMINIO-RAILWAY.up.railway.app/api"
+        "EXPO_PUBLIC_API_URL": "https://estoque-mobile-production.up.railway.app/api"
       }
     }
   },
