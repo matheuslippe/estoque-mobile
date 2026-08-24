@@ -63,17 +63,17 @@ estoque-mobile/
 
 ## Fase 3 — App mobile (React Native + Expo) (1–2 semanas)
 
-- [ ] `npx create-expo-app mobile`
-- [ ] Navegação (React Navigation): Início (cards), Detalhe do item, Lista de compras, Histórico, Análise
-- [ ] Tela de login (JWT), token salvo com `expo-secure-store`
-- [ ] Cards de estoque com barra de nível e status (ok / baixo / zerado) — reaproveite a lógica visual que você já validou no Streamlit
-- [ ] Ações de retirar / repor / ajustar direto no card (modal ou bottom sheet)
-- [ ] Tela de lista de compras (consome `/api/lista-compras/`)
-- [ ] Botão de reposição em lote
-- [ ] Histórico com filtro por item e período
-- [ ] Gráficos de consumo (`victory-native` ou `react-native-chart-kit`)
-- [ ] Tema claro/escuro seguindo o sistema do celular
-- [ ] Testar em Android e iOS via Expo Go
+- [x] `npx create-expo-app mobile`
+- [x] Navegação (React Navigation): Início (cards), Detalhe do item, Lista de compras, Histórico, Análise
+- [x] Tela de login (JWT), token salvo com `expo-secure-store` (fallback `localStorage` só no preview web)
+- [x] Cards de estoque com barra de nível e status (ok / baixo / zerado) — reaproveite a lógica visual que você já validou no Streamlit
+- [x] Ações de retirar / repor / ajustar direto no card (modal ou bottom sheet) — retirar/repor no detalhe, ajustar em bottom sheet
+- [x] Tela de lista de compras (consome `/api/lista-compras/`)
+- [x] Botão de reposição em lote
+- [x] Histórico com filtro por item e período
+- [x] Gráficos de consumo (`victory-native` ou `react-native-chart-kit`) — `react-native-chart-kit`
+- [x] Tema claro/escuro seguindo o sistema do celular
+- [ ] Testar em Android e iOS via Expo Go — validado via preview web (login, cards, detalhe/análise, retirar, lista de compras, reposição em lote, histórico, logout); falta testar num device real com Expo Go
 
 ## Fase 4 — Bot + IA (em paralelo à Fase 3, ou logo depois) (3–5 dias)
 
