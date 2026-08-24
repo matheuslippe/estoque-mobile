@@ -114,6 +114,33 @@ Em `mobile/.env`:
 EXPO_PUBLIC_API_URL=https://<seu-dominio-railway>/api
 ```
 
+## 9. Dashboard web no Vercel
+
+Publicado em: `https://web-jade-three-89.vercel.app` (projeto
+`matheuslippe6-9418s-projects/web`).
+
+```bash
+npm install -g vercel
+vercel login                          # abre um fluxo de autenticacao por codigo no navegador
+cd web
+vercel link --yes                     # cria/linka o projeto na primeira vez
+vercel env add NEXT_PUBLIC_API_URL production \
+  --value "https://<seu-dominio-railway>/api" --no-sensitive --yes
+vercel --prod --yes
+```
+
+- `NEXT_PUBLIC_*` **não pode** ser adicionada como variável "sensitive" (padrão do
+  `vercel env add`) em Production/Preview — dá erro `invalid_visibility`. Use
+  `--no-sensitive` (faz sentido: essas variáveis vão pro bundle JS público mesmo).
+- **CORS**: depois do primeiro deploy, pegue a URL de produção que o Vercel gerou
+  (a "Aliased" no output do `vercel --prod`, fica estável entre deploys) e
+  adicione em `CORS_ALLOWED_ORIGINS` no serviço `estoque-mobile` do Railway —
+  sem isso a API bloqueia as requisições do dashboard (em produção,
+  `DEBUG=False` desativa o `CORS_ALLOW_ALL_ORIGINS` que salva no dev local):
+  ```bash
+  railway variable set "CORS_ALLOWED_ORIGINS=https://<dominio-vercel>" --service estoque-mobile
+  ```
+
 ## Custos
 
 O Railway cobra por uso depois do trial inicial (não é mais "free tier"

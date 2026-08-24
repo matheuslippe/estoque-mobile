@@ -133,11 +133,16 @@ python manage.py run_telegram_bot
 - Erros `503 UNAVAILABLE` do Gemini são sobrecarga do lado do Google (visto acontecer de verdade
   em teste real), não bug nosso — só re-tentar.
 
-## Produção (Railway)
+## Produção
 
-Backend em produção: `https://estoque-mobile-production.up.railway.app` — dois
-serviços (`estoque-mobile` = web, `bot-telegram` = worker) + Postgres, todos
-no projeto `estoquemobile`. Guia completo: [docs/DEPLOY.md](docs/DEPLOY.md).
+- **Backend (Railway)**: `https://estoque-mobile-production.up.railway.app` —
+  dois serviços (`estoque-mobile` = web, `bot-telegram` = worker) + Postgres,
+  projeto `estoquemobile`. Guia: [docs/DEPLOY.md](docs/DEPLOY.md).
+- **Dashboard web (Vercel)**: `https://web-jade-three-89.vercel.app` — projeto
+  `matheuslippe6-9418s-projects/web`. `NEXT_PUBLIC_API_URL` aponta pro Railway
+  acima; `CORS_ALLOWED_ORIGINS` no backend já libera esse domínio.
+- **Mobile**: nenhum build publicado ainda (EAS configurado, não executado —
+  ver [docs/MOBILE_DEPLOY.md](docs/MOBILE_DEPLOY.md)).
 
 Pegadinhas descobertas fazendo o primeiro deploy de verdade (já corrigidas no
 código, mas bom saber se aparecer de novo):
