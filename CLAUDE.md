@@ -128,6 +128,17 @@ python manage.py run_telegram_bot
 
 - Precisa de `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_IDS`, `GEMINI_API_KEY` e `BOT_API_PASSWORD`
   preenchidos no `.env`, e do usuário `bot` criado (`python manage.py criar_usuario_bot`).
+- **Se o bot responder "código inválido ou expirado" pra tudo (vínculo de Telegram, comandos em
+  geral), suspeite de senha do usuário `bot` dessincronizada** — aconteceu em produção em
+  2026-08-25: `BOT_API_PASSWORD` no Railway não batia mais com a senha salva no banco pro usuário
+  `bot`, então **toda** chamada do bot pra API levava 401, e o bot mostra essa mensagem genérica
+  pra qualquer `ApiError`, mascarando a causa real. Diagnóstico: `curl -X POST
+  .../api/token/ -d '{"username":"bot","password":"<BOT_API_PASSWORD atual>"}'` — se vier
+  "Usuário e/ou senha incorreto(s)", é isso. Fix: `railway ssh --service estoque-mobile
+  "/opt/venv/bin/python manage.py criar_usuario_bot"` (idempotente, releva a senha do `.env`/env
+  vars do Railway pro usuário existente). No Git Bash do Windows, prefixe com
+  `MSYS_NO_PATHCONV=1` — sem isso o path `/opt/venv/bin/python` é reescrito errado
+  (`C:/Program Files/...`) e o SSH falha com "No such file or directory".
 - **Nunca deixe duas instâncias rodando ao mesmo tempo** — o Telegram só aceita um `getUpdates`
   por token, e no Windows é fácil acumular processos órfãos de sessões anteriores (background
   tasks que não foram encerrados direito). Antes de subir uma instância nova, confira:
