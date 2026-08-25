@@ -80,6 +80,24 @@ export async function login(username: string, password: string) {
   tokenStorage.save(data.access, data.refresh);
 }
 
+export async function register(username: string, password: string) {
+  const { data } = await api.post("/register/", { username, password });
+  tokenStorage.save(data.access, data.refresh);
+}
+
+export async function requestPasswordReset(username: string) {
+  await api.post("/password-reset/request/", { username });
+}
+
+export async function confirmPasswordReset(username: string, code: string, newPassword: string) {
+  const { data } = await api.post("/password-reset/confirm/", {
+    username,
+    code,
+    new_password: newPassword,
+  });
+  tokenStorage.save(data.access, data.refresh);
+}
+
 export function logout() {
   tokenStorage.clear();
 }

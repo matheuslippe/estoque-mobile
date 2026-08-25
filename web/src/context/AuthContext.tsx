@@ -2,12 +2,21 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isAuthenticated, login as apiLogin, logout as apiLogout, setSessionExpiredHandler } from "@/lib/api";
+import {
+  confirmPasswordReset as apiConfirmPasswordReset,
+  isAuthenticated,
+  login as apiLogin,
+  logout as apiLogout,
+  register as apiRegister,
+  setSessionExpiredHandler,
+} from "@/lib/api";
 
 interface AuthContextValue {
   loading: boolean;
   signedIn: boolean;
   login: (username: string, password: string) => Promise<void>;
+  register: (username: string, password: string) => Promise<void>;
+  confirmPasswordReset: (username: string, code: string, newPassword: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -32,13 +41,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSignedIn(true);
   }, []);
 
+  const register = useCallback(async (username: string, password: string) => {
+    await apiRegister(username, password);
+    setSignedIn(true);
+  }, []);
+
+  const confirmPasswordReset = useCallback(async (username: string, code: string, newPassword: string) => {
+    await apiConfirmPasswordReset(username, code, newPassword);
+    setSignedIn(true);
+  }, []);
+
   const logout = useCallback(() => {
     apiLogout();
     setSignedIn(false);
     router.replace("/login");
   }, [router]);
 
-  return <AuthContext.Provider value={{ loading, signedIn, login, logout }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ loading, signedIn, login, register, confirmPasswordReset, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
