@@ -60,10 +60,14 @@ python manage.py runserver 0.0.0.0:8000
 - Endpoints: `/api/itens/` (CRUD + `/movimentar/` + `/analise/`), `/api/movimentacoes/`
   (leitura, filtro `?item=` `?data_inicio=` `?data_fim=`), `/api/lista-compras/` (+`/notificar/`),
   `/api/reposicao-lote/`, `/api/register/` (auto-cadastro, aberto — `AllowAny`),
-  `/api/password-reset/request/` + `/password-reset/confirm/` (código de 6 dígitos por
-  Telegram, expira em 15 min — `bots/models.py:PasswordResetCode`, sem SMTP configurado),
+  `/api/password-reset/request/` + `/password-reset/confirm/` (código de 6 dígitos pro chat
+  pessoal do Telegram vinculado à conta, expira em 15 min — `bots/models.py:PasswordResetCode`,
+  sem SMTP configurado; sem vínculo, falha em silêncio, não cai no grupo da família),
+  `/api/telegram/link/status/` + `/link/request/` + `/link/confirm/` (vínculo conta↔Telegram —
+  usuário pede código logado no app, manda pro bot no privado; `/link/confirm/` só aceita a
+  credencial de serviço do bot, ver `bots/models.py:TelegramLink`),
   `/api/token/` + `/token/refresh/`, `/api/docs/` (Swagger), `/health/`.
-- Testes: `pytest` (46 testes, todos passando na última checagem).
+- Testes: `pytest` (56 testes, todos passando na última checagem).
 - Usuários já criados neste banco local: `admin` (superuser), `matheus` (superuser, criado a
   pedido do usuário), `bot` (usuário de serviço só pra autenticar o bot na API — sem staff/superuser,
   criado via `python manage.py criar_usuario_bot`, que lê `BOT_API_USERNAME`/`BOT_API_PASSWORD` do `.env`).
