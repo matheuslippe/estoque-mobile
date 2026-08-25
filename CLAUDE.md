@@ -59,7 +59,8 @@ python manage.py runserver 0.0.0.0:8000
 - **`.env` não recarrega sozinho** — depois de editar, mate e suba o `runserver` de novo.
 - Endpoints: `/api/itens/` (CRUD + `/movimentar/` + `/analise/`), `/api/movimentacoes/`
   (leitura, filtro `?item=` `?data_inicio=` `?data_fim=`), `/api/lista-compras/` (+`/notificar/`),
-  `/api/reposicao-lote/`, `/api/token/` + `/token/refresh/`, `/api/docs/` (Swagger), `/health/`.
+  `/api/reposicao-lote/`, `/api/register/` (auto-cadastro, aberto — `AllowAny`), `/api/token/` +
+  `/token/refresh/`, `/api/docs/` (Swagger), `/health/`.
 - Testes: `pytest` (32 testes, todos passando na última checagem).
 - Usuários já criados neste banco local: `admin` (superuser), `matheus` (superuser, criado a
   pedido do usuário), `bot` (usuário de serviço só pra autenticar o bot na API — sem staff/superuser,

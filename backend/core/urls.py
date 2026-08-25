@@ -10,6 +10,8 @@ from estoque.views import ItemViewSet
 from historico.views import MovimentacaoViewSet
 from shopping.views import ListaComprasView, NotificarListaComprasView, ReposicaoLoteView
 
+from .auth_views import RegisterView
+
 router = DefaultRouter()
 router.register("itens", ItemViewSet, basename="item")
 router.register("movimentacoes", MovimentacaoViewSet, basename="movimentacao")
@@ -30,6 +32,7 @@ urlpatterns = [
     path("api/lista-compras/", ListaComprasView.as_view(), name="lista-compras"),
     path("api/lista-compras/notificar/", NotificarListaComprasView.as_view(), name="lista-compras-notificar"),
     path("api/reposicao-lote/", ReposicaoLoteView.as_view(), name="reposicao-lote"),
+    path("api/register/", RegisterView.as_view(), name="register"),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/schema/", OpenSpectacularAPIView.as_view(), name="schema"),

@@ -131,7 +131,10 @@ export function DespensaScreen({ navigation }: Props) {
         onClose={() => setSheetVisible(false)}
         onSubmit={async (payload) => {
           await criarItem(payload);
-          await carregar();
+          // O item ja foi criado com sucesso aqui — se so a atualizacao da
+          // lista falhar (rede, etc), isso nao deve aparecer como erro de
+          // cadastro no sheet.
+          carregar().catch(() => {});
         }}
       />
     </SafeAreaView>

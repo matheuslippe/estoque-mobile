@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Estoque",
+    "name": "dispensa.me",
     "slug": "estoque-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,7 +13,7 @@
     "android": {
       "package": "com.matheuslippe.estoque",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#f5ead8",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"

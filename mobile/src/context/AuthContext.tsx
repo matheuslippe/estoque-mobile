@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { getStoredUsername, isAuthenticated, login as apiLogin, logout as apiLogout } from "../api/auth";
+import {
+  getStoredUsername,
+  isAuthenticated,
+  login as apiLogin,
+  logout as apiLogout,
+  register as apiRegister,
+} from "../api/auth";
 import { setSessionExpiredHandler } from "../api/client";
 
 interface AuthContextValue {
@@ -8,6 +14,7 @@ interface AuthContextValue {
   username: string | null;
   error: string | null;
   login: (username: string, password: string) => Promise<void>;
+  register: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -40,6 +47,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const register = useCallback(async (username: string, password: string) => {
+    setError(null);
+    // Deixa o erro do backend (usuario ja existe, senha fraca, etc) subir
+    // como esta — a tela de login mostra a mensagem certa por campo.
+    await apiRegister(username, password);
+    setSignedIn(true);
+    setUsername(username);
+  }, []);
+
   const logout = useCallback(async () => {
     await apiLogout();
     setSignedIn(false);
@@ -47,7 +63,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ loading, signedIn, username, error, login, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ loading, signedIn, username, error, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 

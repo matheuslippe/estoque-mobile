@@ -5,6 +5,11 @@ export async function login(username: string, password: string) {
   await tokenStorage.save(data.access, data.refresh, username);
 }
 
+export async function register(username: string, password: string) {
+  const { data } = await api.post("/register/", { username, password });
+  await tokenStorage.save(data.access, data.refresh, username);
+}
+
 export async function logout() {
   await tokenStorage.clear();
 }

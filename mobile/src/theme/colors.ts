@@ -13,7 +13,10 @@ const palette = {
     textFaint: neutral[500],
     border: "rgba(32, 30, 29, 0.10)",
     borderStrong: "rgba(32, 30, 29, 0.18)",
-    primary: accent[500],
+    // #c67139 e o "--color-accent" base do mockup (styles.css) — usado em
+    // todo botao/CTA primario nas telas reais. Nao confundir com o
+    // accent[500] da rampa (#d67f48), que e so pro status "acabando".
+    primary: "#c67139",
     primaryText: "#f5ead8",
     primaryStrong: accent[700],
     secondary: accent2[500],
