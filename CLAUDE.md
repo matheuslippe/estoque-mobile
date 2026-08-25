@@ -153,10 +153,14 @@ python manage.py run_telegram_bot
   acima; `CORS_ALLOWED_ORIGINS` no backend já libera esse domínio.
 - **Mobile (EAS)**: Android, perfil `preview` (APK standalone, instalação
   direta, sem Play Store), aponta pro backend do Railway acima. Build mais
-  recente `3e1b3b12-42c7-4f6c-a884-cb516370d3d3` (2026-08-25, já com o
-  redesign "dispensa.me" — tema Organic, ícone/nome corretos, cor primária
-  `#c67139` e cadastro de conta aberto), SDK 57.
-  Página: https://expo.dev/accounts/matheus_lippe/projects/estoque-mobile/builds/3e1b3b12-42c7-4f6c-a884-cb516370d3d3.
+  recente `35f0e734-faf6-47dd-9235-bfc578908079` (2026-08-25, v1.0.1 — já
+  com o redesign "dispensa.me", cadastro de conta, "esqueci a senha" via
+  Telegram, e o botão Retirar desabilitado quando o item está zerado),
+  SDK 57. Página:
+  https://expo.dev/accounts/matheus_lippe/projects/estoque-mobile/builds/35f0e734-faf6-47dd-9235-bfc578908079.
+  A fila do plano gratuito da EAS pode atrasar builds bastante (já vimos
+  um levar 45min sem incidente registrado no status.expo.dev) — não é
+  sinal de erro, só espera.
   Pra gerar um novo build: `cd mobile && eas build --platform android --profile preview`
   (guia completo em [docs/MOBILE_DEPLOY.md](docs/MOBILE_DEPLOY.md)). iOS e
   builds de `production` (pra loja) ainda não foram feitos — precisam de conta
