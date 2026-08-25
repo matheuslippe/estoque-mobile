@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Package, ShoppingCart, RotateCcwClock, LogOut } from "lucide-react";
+import { Package, ShoppingCart, RotateCcwClock, LogOut, Send } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { listaCompras } from "@/lib/shopping";
+import { TelegramLinkDialog } from "@/components/TelegramLinkDialog";
 
 const LINKS = [
   { href: "/", label: "Estoque", icon: Package },
@@ -19,6 +20,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { loading, signedIn, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [telegramOpen, setTelegramOpen] = useState(false);
 
   const { data: compras } = useQuery({ queryKey: ["lista-compras"], queryFn: listaCompras, enabled: signedIn });
 
@@ -63,16 +65,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <button
-          onClick={logout}
-          className="mt-auto flex items-center gap-2.5 rounded-2xl bg-surface px-3 py-2.5 text-left text-sm font-medium text-ink-muted transition hover:text-danger"
-        >
-          <LogOut size={16} strokeWidth={2.3} />
-          Sair
-        </button>
+        <div className="mt-auto flex flex-col gap-1.5">
+          <button
+            onClick={() => setTelegramOpen(true)}
+            className="flex items-center gap-2.5 rounded-2xl px-3 py-2.5 text-left text-sm font-medium text-ink-muted transition hover:bg-surface"
+          >
+            <Send size={16} strokeWidth={2.3} />
+            Vincular Telegram
+          </button>
+          <button
+            onClick={logout}
+            className="flex items-center gap-2.5 rounded-2xl bg-surface px-3 py-2.5 text-left text-sm font-medium text-ink-muted transition hover:text-danger"
+          >
+            <LogOut size={16} strokeWidth={2.3} />
+            Sair
+          </button>
+        </div>
       </aside>
 
       <main className="min-w-0 flex-1 p-7">{children}</main>
+
+      <TelegramLinkDialog open={telegramOpen} onClose={() => setTelegramOpen(false)} />
     </div>
   );
 }

@@ -2,13 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowDownToLine, ArrowUpFromLine, RefreshCcw, Pencil, Trash2 } from "lucide-react-native";
+import { ArrowDownToLine, ArrowUpFromLine, RefreshCcw, Pencil, Trash2, Send } from "lucide-react-native";
 import { listarHistorico } from "../api/historico";
 import { listarItens } from "../api/itens";
 import { Item, Movimentacao, TipoMovimentacao } from "../types";
 import { useAuth } from "../context/AuthContext";
 import { useThemeColors } from "../theme/colors";
 import { fonts } from "../theme/fonts";
+import { TelegramLinkSheet } from "../components/TelegramLinkSheet";
 
 const PERIODOS = [
   { label: "7 dias", dias: 7 },
@@ -46,6 +47,7 @@ export function HistoryScreen() {
   const [itemFiltro, setItemFiltro] = useState<number | null>(null);
   const [periodo, setPeriodo] = useState(PERIODOS[1]);
   const [loading, setLoading] = useState(true);
+  const [telegramVisible, setTelegramVisible] = useState(false);
 
   useEffect(() => {
     listarItens().then(setItens);
@@ -77,10 +79,17 @@ export function HistoryScreen() {
     <SafeAreaView edges={["top"]} style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.headerRow}>
         <Text style={[styles.title, { color: colors.text, fontFamily: fonts.heading }]}>Histórico</Text>
-        <Pressable onPress={logout} hitSlop={10}>
-          <Text style={[styles.sair, { color: colors.primaryStrong }]}>Sair</Text>
-        </Pressable>
+        <View style={styles.headerActions}>
+          <Pressable onPress={() => setTelegramVisible(true)} hitSlop={10}>
+            <Send size={18} color={colors.textMuted} strokeWidth={2.3} />
+          </Pressable>
+          <Pressable onPress={logout} hitSlop={10}>
+            <Text style={[styles.sair, { color: colors.primaryStrong }]}>Sair</Text>
+          </Pressable>
+        </View>
       </View>
+
+      <TelegramLinkSheet visible={telegramVisible} onClose={() => setTelegramVisible(false)} />
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsRow}>
         {PERIODOS.map((p) => (
@@ -167,6 +176,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 8 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20, marginBottom: 12 },
   title: { fontSize: 25 },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 16 },
   sair: { fontSize: 14, fontWeight: "600" },
   chipsRow: { flexGrow: 0, marginBottom: 10, paddingHorizontal: 20 },
   chip: { borderRadius: 999, paddingHorizontal: 14, paddingVertical: 8, marginRight: 8 },

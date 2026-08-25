@@ -10,7 +10,14 @@ from estoque.views import ItemViewSet
 from historico.views import MovimentacaoViewSet
 from shopping.views import ListaComprasView, NotificarListaComprasView, ReposicaoLoteView
 
-from .auth_views import PasswordResetConfirmView, PasswordResetRequestView, RegisterView
+from .auth_views import (
+    PasswordResetConfirmView,
+    PasswordResetRequestView,
+    RegisterView,
+    TelegramLinkConfirmView,
+    TelegramLinkRequestView,
+    TelegramLinkStatusView,
+)
 
 router = DefaultRouter()
 router.register("itens", ItemViewSet, basename="item")
@@ -35,6 +42,9 @@ urlpatterns = [
     path("api/register/", RegisterView.as_view(), name="register"),
     path("api/password-reset/request/", PasswordResetRequestView.as_view(), name="password-reset-request"),
     path("api/password-reset/confirm/", PasswordResetConfirmView.as_view(), name="password-reset-confirm"),
+    path("api/telegram/link/status/", TelegramLinkStatusView.as_view(), name="telegram-link-status"),
+    path("api/telegram/link/request/", TelegramLinkRequestView.as_view(), name="telegram-link-request"),
+    path("api/telegram/link/confirm/", TelegramLinkConfirmView.as_view(), name="telegram-link-confirm"),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/schema/", OpenSpectacularAPIView.as_view(), name="schema"),

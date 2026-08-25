@@ -98,6 +98,16 @@ export async function confirmPasswordReset(username: string, code: string, newPa
   tokenStorage.save(data.access, data.refresh);
 }
 
+export async function telegramLinkStatus() {
+  const { data } = await api.get<{ linked: boolean }>("/telegram/link/status/");
+  return data.linked;
+}
+
+export async function requestTelegramLink() {
+  const { data } = await api.post<{ code: string; expires_in_minutes: number }>("/telegram/link/request/");
+  return data;
+}
+
 export function logout() {
   tokenStorage.clear();
 }

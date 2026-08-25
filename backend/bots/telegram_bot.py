@@ -8,6 +8,7 @@ API agora - o bot e so mais um cliente dela, igual o app mobile.
 from __future__ import annotations
 
 import os
+import re
 import tempfile
 
 from django.conf import settings
@@ -164,7 +165,30 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             os.remove(caminho)
 
 
+async def tentar_vincular(update: Update) -> bool:
+    """Se a mensagem for so um codigo de 6 digitos, tenta vincular este chat
+    a conta que gerou o codigo no app. Roda antes de qualquer checagem de
+    autorizacao de proposito: o vinculo acontece no privado do usuario, nao
+    no grupo da familia, entao nunca vai passar em `autorizado()`."""
+    texto = (update.message.text or "").strip()
+    if not re.fullmatch(r"\d{6}", texto):
+        return False
+    try:
+        resultado = cliente.vincular_telegram(texto, update.effective_chat.id)
+    except ApiError:
+        await update.message.reply_text("❌ Codigo invalido ou expirado.")
+        return True
+    await update.message.reply_text(
+        f"✅ Telegram vinculado a conta *{escapar_markdown(resultado['username'])}*.\n"
+        "Codigos de redefinicao de senha vao chegar aqui a partir de agora.",
+        parse_mode="Markdown",
+    )
+    return True
+
+
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if await tentar_vincular(update):
+        return
     if not autorizado(update):
         await avisar_nao_autorizado(update)
         return

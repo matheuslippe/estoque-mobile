@@ -77,3 +77,6 @@ class EstoqueApiClient:
 
     def renomear_item(self, item_id: int, novo_nome: str) -> dict:
         return self._request("PATCH", f"/itens/{item_id}/", json={"nome": novo_nome})
+
+    def vincular_telegram(self, code: str, chat_id: str) -> dict:
+        return self._request("POST", "/telegram/link/confirm/", json={"code": code, "chat_id": str(chat_id)})
