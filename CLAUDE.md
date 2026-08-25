@@ -144,9 +144,10 @@ python manage.py run_telegram_bot
   acima; `CORS_ALLOWED_ORIGINS` no backend já libera esse domínio.
 - **Mobile (EAS)**: Android, perfil `preview` (APK standalone, instalação
   direta, sem Play Store), aponta pro backend do Railway acima. Build mais
-  recente `f15289b3-13fd-49f8-95d5-ac2d75059821` (2026-08-24, já com o
-  redesign "dispensa.me" — tema Organic), SDK 57.
-  Página: https://expo.dev/accounts/matheus_lippe/projects/estoque-mobile/builds/f15289b3-13fd-49f8-95d5-ac2d75059821.
+  recente `3e1b3b12-42c7-4f6c-a884-cb516370d3d3` (2026-08-25, já com o
+  redesign "dispensa.me" — tema Organic, ícone/nome corretos, cor primária
+  `#c67139` e cadastro de conta aberto), SDK 57.
+  Página: https://expo.dev/accounts/matheus_lippe/projects/estoque-mobile/builds/3e1b3b12-42c7-4f6c-a884-cb516370d3d3.
   Pra gerar um novo build: `cd mobile && eas build --platform android --profile preview`
   (guia completo em [docs/MOBILE_DEPLOY.md](docs/MOBILE_DEPLOY.md)). iOS e
   builds de `production` (pra loja) ainda não foram feitos — precisam de conta
