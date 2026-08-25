@@ -59,9 +59,11 @@ python manage.py runserver 0.0.0.0:8000
 - **`.env` não recarrega sozinho** — depois de editar, mate e suba o `runserver` de novo.
 - Endpoints: `/api/itens/` (CRUD + `/movimentar/` + `/analise/`), `/api/movimentacoes/`
   (leitura, filtro `?item=` `?data_inicio=` `?data_fim=`), `/api/lista-compras/` (+`/notificar/`),
-  `/api/reposicao-lote/`, `/api/register/` (auto-cadastro, aberto — `AllowAny`), `/api/token/` +
-  `/token/refresh/`, `/api/docs/` (Swagger), `/health/`.
-- Testes: `pytest` (32 testes, todos passando na última checagem).
+  `/api/reposicao-lote/`, `/api/register/` (auto-cadastro, aberto — `AllowAny`),
+  `/api/password-reset/request/` + `/password-reset/confirm/` (código de 6 dígitos por
+  Telegram, expira em 15 min — `bots/models.py:PasswordResetCode`, sem SMTP configurado),
+  `/api/token/` + `/token/refresh/`, `/api/docs/` (Swagger), `/health/`.
+- Testes: `pytest` (46 testes, todos passando na última checagem).
 - Usuários já criados neste banco local: `admin` (superuser), `matheus` (superuser, criado a
   pedido do usuário), `bot` (usuário de serviço só pra autenticar o bot na API — sem staff/superuser,
   criado via `python manage.py criar_usuario_bot`, que lê `BOT_API_USERNAME`/`BOT_API_PASSWORD` do `.env`).
@@ -128,6 +130,13 @@ python manage.py run_telegram_bot
   `Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like '*run_telegram_bot*' }`
   e mate qualquer `python.exe` real que já esteja rodando (ignore os wrappers `bash.exe` do
   próprio terminal, que aparecem na mesma busca mas não são o processo em si).
+- **`TELEGRAM_CHAT_IDS` guarda o(s) chat_id de grupo autorizado(s), não o chat privado com o
+  bot** — IDs de grupo são negativos (`-100...`), IDs de DM são positivos. Se o grupo virar
+  supergrupo (o Telegram faz isso sozinho ao ativar certos recursos), o chat_id **muda**, e o
+  bot passa a ignorar toda mensagem silenciosamente (sem erro nos logs). Desde
+  2026-08-25 o bot responde `🔒 ... ID deste chat: <id>` pra qualquer chat não autorizado
+  (`bots/telegram_bot.py:avisar_nao_autorizado`) — mande qualquer mensagem no chat certo pra
+  descobrir o ID atual e atualizar a env var (local **e** Railway, `railway variables --set`).
 - O bot fala com a API via `bots/api_client.py` (JWT), nunca acessa o banco direto.
 - Usa o SDK **`google-genai`** (novo) — o `google-generativeai` do projeto original foi
   descontinuado, não reintroduzir essa dependência.

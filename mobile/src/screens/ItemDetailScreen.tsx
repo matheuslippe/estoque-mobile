@@ -110,9 +110,9 @@ export function ItemDetailScreen({ route, navigation }: Props) {
 
       <View style={styles.actionsRow}>
         <Pressable
-          style={[styles.actionButton, { backgroundColor: colors.surface }]}
+          style={[styles.actionButton, { backgroundColor: colors.surface, opacity: item.qtd === 0 ? 0.5 : 1 }]}
           onPress={() => movimentar("SAIDA")}
-          disabled={busy}
+          disabled={busy || item.qtd === 0}
         >
           <Minus size={18} color={colors.text} strokeWidth={2.5} />
           <Text style={[styles.actionText, { color: colors.text, fontFamily: fonts.semiBold }]}>Retirar</Text>

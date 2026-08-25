@@ -136,8 +136,18 @@ async def executar(msg, dados: dict) -> None:
     )
 
 
+async def avisar_nao_autorizado(update: Update) -> None:
+    chat = update.effective_chat
+    print(f"[bot] mensagem de chat nao autorizado: id={chat.id} tipo={chat.type} titulo={chat.title!r}")
+    await update.message.reply_text(
+        f"🔒 Esse chat nao esta autorizado a usar o bot.\nID deste chat: `{chat.id}`",
+        parse_mode="Markdown",
+    )
+
+
 async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not autorizado(update):
+        await avisar_nao_autorizado(update)
         return
     msg = await update.message.reply_text("🎙️ Ouvindo o audio...")
     with tempfile.NamedTemporaryFile(suffix=".ogg", delete=False) as tmp:
@@ -156,6 +166,7 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not autorizado(update):
+        await avisar_nao_autorizado(update)
         return
     msg = await update.message.reply_text("⏳ Processando...")
     try:

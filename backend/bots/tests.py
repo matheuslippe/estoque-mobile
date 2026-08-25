@@ -4,7 +4,7 @@ from django.test import TestCase, override_settings
 
 from .api_client import ApiError, EstoqueApiClient
 from .formatting import escapar_markdown, texto_lista_compras
-from .telegram_bot import buscar_item
+from .telegram_bot import autorizado, buscar_item
 
 
 class TestEscaparMarkdown(TestCase):
@@ -50,6 +50,25 @@ class TestBuscarItem(TestCase):
 
     def test_string_vazia_retorna_none(self):
         assert buscar_item(self.ITENS, "   ") is None
+
+
+class TestAutorizado(TestCase):
+    def _update(self, chat_id: int):
+        update = Mock()
+        update.effective_chat.id = chat_id
+        return update
+
+    @override_settings(TELEGRAM_CHAT_IDS=["-100"])
+    def test_chat_na_lista_e_autorizado(self):
+        assert autorizado(self._update(-100)) is True
+
+    @override_settings(TELEGRAM_CHAT_IDS=["-100"])
+    def test_chat_fora_da_lista_nao_e_autorizado(self):
+        assert autorizado(self._update(123456)) is False
+
+    @override_settings(TELEGRAM_CHAT_IDS=[])
+    def test_lista_vazia_libera_qualquer_chat(self):
+        assert autorizado(self._update(999)) is True
 
 
 @override_settings(BOT_API_BASE_URL="http://testserver/api", BOT_API_USERNAME="bot", BOT_API_PASSWORD="senha123")

@@ -10,7 +10,7 @@ from estoque.views import ItemViewSet
 from historico.views import MovimentacaoViewSet
 from shopping.views import ListaComprasView, NotificarListaComprasView, ReposicaoLoteView
 
-from .auth_views import RegisterView
+from .auth_views import PasswordResetConfirmView, PasswordResetRequestView, RegisterView
 
 router = DefaultRouter()
 router.register("itens", ItemViewSet, basename="item")
@@ -33,6 +33,8 @@ urlpatterns = [
     path("api/lista-compras/notificar/", NotificarListaComprasView.as_view(), name="lista-compras-notificar"),
     path("api/reposicao-lote/", ReposicaoLoteView.as_view(), name="reposicao-lote"),
     path("api/register/", RegisterView.as_view(), name="register"),
+    path("api/password-reset/request/", PasswordResetRequestView.as_view(), name="password-reset-request"),
+    path("api/password-reset/confirm/", PasswordResetConfirmView.as_view(), name="password-reset-confirm"),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/schema/", OpenSpectacularAPIView.as_view(), name="schema"),

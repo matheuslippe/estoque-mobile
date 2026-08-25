@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import {
+  confirmPasswordReset as apiConfirmPasswordReset,
   getStoredUsername,
   isAuthenticated,
   login as apiLogin,
@@ -15,6 +16,7 @@ interface AuthContextValue {
   error: string | null;
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string) => Promise<void>;
+  confirmPasswordReset: (username: string, code: string, newPassword: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -56,6 +58,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUsername(username);
   }, []);
 
+  const confirmPasswordReset = useCallback(async (username: string, code: string, newPassword: string) => {
+    setError(null);
+    await apiConfirmPasswordReset(username, code, newPassword);
+    setSignedIn(true);
+    setUsername(username);
+  }, []);
+
   const logout = useCallback(async () => {
     await apiLogout();
     setSignedIn(false);
@@ -63,7 +72,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ loading, signedIn, username, error, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ loading, signedIn, username, error, login, register, confirmPasswordReset, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
