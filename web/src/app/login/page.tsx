@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
@@ -25,30 +26,31 @@ export default function LoginPage() {
       await login(username.trim(), password);
       router.replace("/");
     } catch {
-      setError("Usuario ou senha invalidos.");
+      setError("Usuário ou senha inválidos.");
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <div className="flex min-h-screen flex-1 items-center justify-center px-6">
+    <div className="flex min-h-screen flex-1 items-center justify-center bg-bg px-6">
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-5">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900">Estoque</h1>
-          <p className="mt-1 text-slate-500">Entre com sua conta para continuar</p>
+          <Image src="/icon-192.png" alt="" width={48} height={48} className="mb-3.5 rounded-2xl" />
+          <h1 className="font-heading text-4xl text-ink">dispensa.me</h1>
+          <p className="mt-1.5 text-ink-muted">Entre com sua conta para continuar</p>
         </div>
 
         <div className="space-y-3">
           <input
-            className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-            placeholder="Usuario"
+            className="w-full rounded-full bg-surface px-5 py-3.5 text-sm text-ink outline-none placeholder:text-ink-faint"
+            placeholder="Usuário"
             autoComplete="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
           <input
-            className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-full bg-surface px-5 py-3.5 text-sm text-ink outline-none placeholder:text-ink-faint"
             placeholder="Senha"
             type="password"
             autoComplete="current-password"
@@ -57,12 +59,12 @@ export default function LoginPage() {
           />
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-danger">{error}</p>}
 
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
+          className="w-full rounded-full bg-primary py-3.5 font-heading text-base text-primary-text transition disabled:opacity-60"
         >
           {submitting ? "Entrando..." : "Entrar"}
         </button>

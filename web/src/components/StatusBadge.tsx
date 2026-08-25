@@ -1,21 +1,20 @@
 import { StatusItem } from "@/lib/types";
 
 const ESTILO: Record<StatusItem, string> = {
-  ok: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  baixo: "bg-amber-50 text-amber-700 border-amber-200",
-  zerado: "bg-red-50 text-red-700 border-red-200",
+  ok: "bg-accent2-200 text-accent2-700",
+  baixo: "bg-accent-200 text-accent-700",
+  zerado: "bg-accent-800 text-accent-200",
 };
 
 const LABEL: Record<StatusItem, string> = {
-  ok: "OK",
-  baixo: "Baixo",
-  zerado: "Zerado",
+  ok: "Suficiente",
+  baixo: "Acabando",
+  zerado: "Em falta",
 };
 
 export function StatusBadge({ status }: { status: StatusItem }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${ESTILO[status]}`}>
-      <span className="h-1.5 w-1.5 rounded-full bg-current" />
+    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold ${ESTILO[status]}`}>
       {LABEL[status]}
     </span>
   );

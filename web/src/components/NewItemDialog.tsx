@@ -41,7 +41,7 @@ export function NewItemDialog({ open, onClose, onCreated }: { open: boolean; onC
       onClose();
     } catch (e: unknown) {
       const msg = (e as { response?: { data?: { nome?: string[] } } })?.response?.data?.nome?.[0];
-      setErro(msg ?? "Nao foi possivel cadastrar o item.");
+      setErro(msg ?? "Não foi possível cadastrar o item.");
     } finally {
       setSalvando(false);
     }
@@ -49,37 +49,37 @@ export function NewItemDialog({ open, onClose, onCreated }: { open: boolean; onC
 
   return (
     <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4 rounded-xl bg-white p-6 shadow-xl">
-        <h2 className="text-lg font-bold text-slate-900">Novo item</h2>
+      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4 rounded-3xl bg-surface p-6">
+        <h2 className="font-heading text-xl text-ink">Novo item</h2>
 
         <div className="space-y-3">
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-full bg-bg px-4 py-2.5 text-sm text-ink outline-none placeholder:text-ink-faint"
             placeholder="Nome"
             value={nome}
             onChange={(e) => setNome(e.target.value)}
           />
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-full bg-bg px-4 py-2.5 text-sm text-ink outline-none placeholder:text-ink-faint"
             placeholder="Categoria (opcional)"
             value={categoria}
             onChange={(e) => setCategoria(e.target.value)}
           />
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="mb-1 block text-xs text-slate-500">Quantidade</label>
+              <label className="mb-1 block text-xs text-ink-muted">Quantidade</label>
               <input
                 type="number"
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-full bg-bg px-4 py-2.5 text-sm text-ink outline-none"
                 value={qtd}
                 onChange={(e) => setQtd(e.target.value)}
               />
             </div>
             <div className="flex-1">
-              <label className="mb-1 block text-xs text-slate-500">Minima</label>
+              <label className="mb-1 block text-xs text-ink-muted">Mínima</label>
               <input
                 type="number"
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-full bg-bg px-4 py-2.5 text-sm text-ink outline-none"
                 value={qtdMinima}
                 onChange={(e) => setQtdMinima(e.target.value)}
               />
@@ -87,7 +87,7 @@ export function NewItemDialog({ open, onClose, onCreated }: { open: boolean; onC
           </div>
         </div>
 
-        {erro && <p className="text-sm text-red-600">{erro}</p>}
+        {erro && <p className="text-sm text-danger">{erro}</p>}
 
         <div className="flex gap-3">
           <button
@@ -96,14 +96,14 @@ export function NewItemDialog({ open, onClose, onCreated }: { open: boolean; onC
               reset();
               onClose();
             }}
-            className="flex-1 rounded-lg border border-slate-300 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="flex-1 rounded-full bg-bg py-2.5 text-sm font-semibold text-ink"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={salvando}
-            className="flex-1 rounded-lg bg-blue-600 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+            className="flex-1 rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-text disabled:opacity-60"
           >
             {salvando ? "Salvando..." : "Cadastrar"}
           </button>

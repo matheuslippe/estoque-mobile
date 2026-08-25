@@ -16,20 +16,33 @@ const PERIODOS = [
 
 const TIPO_LABEL: Record<TipoMovimentacao, string> = {
   ENTRADA: "Entrada",
-  SAIDA: "Saida",
+  SAIDA: "Saída",
   AJUSTE: "Ajuste",
   CADASTRO: "Cadastro",
-  EXCLUSAO: "Exclusao",
+  EXCLUSAO: "Exclusão",
 };
 
 function corTipo(tipo: TipoMovimentacao) {
-  if (tipo === "ENTRADA" || tipo === "CADASTRO") return "text-emerald-600";
-  if (tipo === "SAIDA" || tipo === "EXCLUSAO") return "text-red-600";
-  return "text-amber-600";
+  if (tipo === "ENTRADA" || tipo === "CADASTRO") return "text-secondary";
+  if (tipo === "SAIDA" || tipo === "EXCLUSAO") return "text-primary-strong";
+  return "text-ink-muted";
 }
 
 function formatarData(iso: string) {
   return new Date(iso).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+}
+
+function Chip({ label, ativo, onClick }: { label: string; ativo: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-full px-3.5 py-1.5 text-xs font-semibold ${
+        ativo ? "bg-primary text-primary-text" : "bg-surface text-ink-muted hover:bg-bg-alt"
+      }`}
+    >
+      {label}
+    </button>
+  );
 }
 
 export default function HistoricoPage() {
@@ -63,13 +76,13 @@ export default function HistoricoPage() {
   }
 
   return (
-    <div className="max-w-3xl space-y-5">
+    <div className="mx-auto max-w-3xl space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold text-slate-900">Historico</h1>
+        <h1 className="font-heading text-2xl text-ink">Histórico</h1>
         <button
           onClick={exportarCsv}
           disabled={movs.length === 0}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+          className="rounded-full border border-border-strong px-4 py-2 text-sm font-semibold text-ink hover:bg-surface disabled:opacity-50"
         >
           Exportar CSV
         </button>
@@ -77,53 +90,30 @@ export default function HistoricoPage() {
 
       <div className="flex flex-wrap gap-2">
         {PERIODOS.map((p) => (
-          <button
-            key={p.label}
-            onClick={() => setPeriodo(p)}
-            className={`rounded-full border px-3 py-1 text-xs font-semibold ${
-              p.dias === periodo.dias ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300 text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            {p.label}
-          </button>
+          <Chip key={p.label} label={p.label} ativo={p.dias === periodo.dias} onClick={() => setPeriodo(p)} />
         ))}
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button
-          onClick={() => setItemFiltro(null)}
-          className={`rounded-full border px-3 py-1 text-xs font-semibold ${
-            itemFiltro === null ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300 text-slate-600 hover:bg-slate-50"
-          }`}
-        >
-          Todos os itens
-        </button>
+        <Chip label="Todos os itens" ativo={itemFiltro === null} onClick={() => setItemFiltro(null)} />
         {itens.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => setItemFiltro(item.id)}
-            className={`rounded-full border px-3 py-1 text-xs font-semibold ${
-              itemFiltro === item.id ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300 text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            {item.nome}
-          </button>
+          <Chip key={item.id} label={item.nome} ativo={itemFiltro === item.id} onClick={() => setItemFiltro(item.id)} />
         ))}
       </div>
 
       {isLoading ? (
-        <p className="py-10 text-center text-slate-400">Carregando...</p>
+        <p className="py-10 text-center text-ink-faint">Carregando...</p>
       ) : movs.length === 0 ? (
-        <p className="py-10 text-center text-slate-400">Nenhuma movimentacao no periodo.</p>
+        <p className="py-10 text-center text-ink-faint">Nenhuma movimentação no período.</p>
       ) : (
         <div className="space-y-2">
           {movs.map((m) => (
-            <div key={m.id} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
+            <div key={m.id} className="flex items-center justify-between rounded-2xl bg-surface px-4 py-3.5">
               <div className="flex items-center gap-3">
                 <span className={`h-2 w-2 rounded-full bg-current ${corTipo(m.tipo)}`} />
                 <div>
-                  <p className="text-sm font-medium text-slate-900">{m.item_nome}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm font-semibold text-ink">{m.item_nome}</p>
+                  <p className="text-xs text-ink-faint">
                     {TIPO_LABEL[m.tipo]} · {formatarData(m.data_hora)}
                     {m.obs ? ` · ${m.obs}` : ""}
                   </p>

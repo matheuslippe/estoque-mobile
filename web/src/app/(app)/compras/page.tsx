@@ -35,24 +35,24 @@ export default function ComprasPage() {
     );
   }
 
-  if (isLoading) return <p className="py-10 text-center text-slate-400">Carregando...</p>;
+  if (isLoading) return <p className="py-10 text-center text-ink-faint">Carregando...</p>;
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold text-slate-900">Lista de compras</h1>
+        <h1 className="font-heading text-2xl text-ink">Lista de compras</h1>
         <div className="flex gap-2">
           <button
             onClick={exportarCsv}
             disabled={itens.length === 0}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            className="rounded-full border border-border-strong px-4 py-2 text-sm font-semibold text-ink hover:bg-surface disabled:opacity-50"
           >
             Exportar CSV
           </button>
           <button
             onClick={() => notificar.mutate()}
             disabled={notificar.isPending || itens.length === 0}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            className="rounded-full border border-border-strong px-4 py-2 text-sm font-semibold text-ink hover:bg-surface disabled:opacity-50"
           >
             Enviar no Telegram
           </button>
@@ -60,13 +60,13 @@ export default function ComprasPage() {
       </div>
 
       {itens.length === 0 ? (
-        <p className="py-10 text-center text-slate-400">Nenhum item em falta no momento.</p>
+        <p className="py-10 text-center text-ink-faint">Nenhum item em falta no momento.</p>
       ) : (
         <>
           <button
             onClick={() => repor.mutate()}
             disabled={repor.isPending}
-            className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+            className="w-full rounded-full bg-primary py-3 font-heading text-[15px] text-primary-text disabled:opacity-60"
           >
             {repor.isPending ? "Repondo..." : "Repor todos os itens em falta"}
           </button>
@@ -74,22 +74,19 @@ export default function ComprasPage() {
           <div className="space-y-6">
             {Object.entries(porCategoria).map(([cat, lista]) => (
               <div key={cat}>
-                <h2 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">{cat}</h2>
+                <h2 className="mb-2.5 text-[11.5px] font-bold tracking-wide text-ink-faint uppercase">{cat}</h2>
                 <div className="space-y-2">
                   {lista.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3"
-                    >
+                    <div key={item.id} className="flex items-center justify-between rounded-2xl bg-surface px-4 py-3.5">
                       <div>
-                        <p className="font-medium text-slate-900">
-                          {item.nome} {item.zerado && <span className="text-red-600">(ZERADO)</span>}
+                        <p className="font-semibold text-ink">
+                          {item.nome} {item.zerado && <span className="text-[11px] font-bold text-primary-strong">ZERADO</span>}
                         </p>
-                        <p className="text-xs text-slate-500">
-                          tem {item.qtd}, minimo {item.qtd_minima}
+                        <p className="mt-0.5 text-xs text-ink-faint">
+                          tem {item.qtd}, mínimo {item.qtd_minima}
                         </p>
                       </div>
-                      <span className="text-lg font-extrabold text-blue-600">+{item.qtd_a_comprar}</span>
+                      <span className="font-heading text-xl text-primary-strong">+{item.qtd_a_comprar}</span>
                     </div>
                   ))}
                 </div>

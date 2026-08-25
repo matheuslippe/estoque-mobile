@@ -1,26 +1,50 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-figtree);
+  --font-heading: var(--font-caprasimo);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Organic — mesma paleta do redesign mobile (ver mobile/src/theme/tokens.ts) */
+  --color-bg: #f5ead8;
+  --color-bg-alt: #ebddc5;
+  --color-surface: #f9f4ed;
+  --color-surface-raised: #ffffff;
+  --color-ink: #201e1d;
+  --color-ink-muted: #82796a;
+  --color-ink-faint: #a19786;
+  --color-border: rgb(32 30 29 / 10%);
+  --color-border-strong: rgb(32 30 29 / 18%);
+
+  --color-primary: #c67139;
+  --color-primary-text: #f5ead8;
+  --color-primary-strong: #8c491a;
+  --color-secondary: #8fa073;
+  --color-danger: #643312;
+
+  --color-accent-100: #fff2eb;
+  --color-accent-200: #ffe1d0;
+  --color-accent-300: #ffc6a5;
+  --color-accent-400: #f6a06b;
+  --color-accent-500: #d67f48;
+  --color-accent-600: #b2622d;
+  --color-accent-700: #8c491a;
+  --color-accent-800: #643312;
+  --color-accent-900: #402310;
+
+  --color-accent2-100: #f0fae1;
+  --color-accent2-200: #e1eecc;
+  --color-accent2-700: #56633f;
+  --color-accent2-800: #3d472b;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading), serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
