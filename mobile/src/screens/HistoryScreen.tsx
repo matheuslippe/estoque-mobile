@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowDownToLine, ArrowUpFromLine, RefreshCcw, Pencil, Trash2, Send } from "lucide-react-native";
+import { ArrowDownToLine, ArrowUpFromLine, RefreshCcw, Pencil, Trash2, Send, Globe } from "lucide-react-native";
 import { listarHistorico } from "../api/historico";
 import { listarItens } from "../api/itens";
 import { Item, Movimentacao, TipoMovimentacao } from "../types";
@@ -33,6 +33,8 @@ const TIPO_ICON: Record<TipoMovimentacao, typeof ArrowDownToLine> = {
   CADASTRO: Pencil,
   EXCLUSAO: Trash2,
 };
+
+const WEB_DASHBOARD_URL = "https://web-jade-three-89.vercel.app";
 
 function formatarData(iso: string) {
   const d = new Date(iso);
@@ -80,6 +82,9 @@ export function HistoryScreen() {
       <View style={styles.headerRow}>
         <Text style={[styles.title, { color: colors.text, fontFamily: fonts.heading }]}>Histórico</Text>
         <View style={styles.headerActions}>
+          <Pressable onPress={() => Linking.openURL(WEB_DASHBOARD_URL)} hitSlop={10}>
+            <Globe size={18} color={colors.textMuted} strokeWidth={2.3} />
+          </Pressable>
           <Pressable onPress={() => setTelegramVisible(true)} hitSlop={10}>
             <Send size={18} color={colors.textMuted} strokeWidth={2.3} />
           </Pressable>
