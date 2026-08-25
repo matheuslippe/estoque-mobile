@@ -211,15 +211,18 @@ código, mas bom saber se aparecer de novo):
 
 ## O que falta (gaps identificados, nenhum construído ainda)
 
-- **Filtro por categoria no mobile Home** — o web tem (dropdown), o mobile só tem busca por nome.
 - **Dashboard de consumo geral** — o app original tinha um `resumo()`/análise agregada (item de
   maior risco, média/dia geral, top 5) na dashboard. Hoje só existe análise **por item**
-  (`/api/itens/{id}/analise/`); o web aproxima um gráfico "mais consumidos" agregando o histórico
-  no client, mas não existe endpoint dedicado nem "maior risco" calculado.
+  (`/api/itens/{id}/analise/`); o mobile ("previsão de consumo" na Dashboard) e o web aproximam
+  isso agregando no client, mas não existe endpoint dedicado nem "maior risco" calculado de verdade.
 - **Notificação push nativa no mobile** (`expo-notifications`) — mencionado como opcional na Fase 4,
   não implementado. Hoje o único aviso proativo é via Telegram.
 - **Multi-usuário/família com permissões por perfil** — mencionado como extra da Fase 6, não
-  implementado. O backend não tem conceito de "perfil"/"família", só usuários Django comuns.
+  implementado. O backend não tem conceito de "perfil"/"família", só usuários Django comuns — e
+  desde 2026-08-25 o cadastro é **aberto** (`/api/register/`, `AllowAny`), então qualquer pessoa
+  com o link do APK pode criar conta e ver/editar o mesmo estoque compartilhado. Foi decisão
+  explícita do usuário (preferiu simplicidade a fechar o cadastro), mas se o app circular além da
+  família de confiança isso vira um problema real — vale revisitar antes disso acontecer.
 - **Exportação em PDF** — só CSV foi implementado (histórico e lista de compras, no dashboard web).
 - **Publicação nas lojas** — backend (Railway), dashboard web (Vercel) e um build Android `preview`
   (EAS, instalação direta) já estão no ar (ver seção "Produção" acima). Falta: build `production` de
