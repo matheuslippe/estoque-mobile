@@ -150,7 +150,9 @@ python manage.py run_telegram_bot
   projeto `estoquemobile`. Guia: [docs/DEPLOY.md](docs/DEPLOY.md).
 - **Dashboard web (Vercel)**: `https://web-jade-three-89.vercel.app` — projeto
   `matheuslippe6-9418s-projects/web`. `NEXT_PUBLIC_API_URL` aponta pro Railway
-  acima; `CORS_ALLOWED_ORIGINS` no backend já libera esse domínio.
+  acima; `CORS_ALLOWED_ORIGINS` no backend já libera esse domínio. Redesign
+  "dispensa.me" (mesmo tema Organic do mobile) aplicado em 2026-08-25, commit
+  `27819de` — Vercel redeploya sozinho a cada push em `main` que toque `web/`.
 - **Mobile (EAS)**: Android, perfil `preview` (APK standalone, instalação
   direta, sem Play Store), aponta pro backend do Railway acima. Build mais
   recente `35f0e734-faf6-47dd-9235-bfc578908079` (2026-08-25, v1.0.1 — já
@@ -205,6 +207,14 @@ código, mas bom saber se aparecer de novo):
   de navegação (React Navigation no mobile web preview, etc.). Alternativa que funciona: `javascript_tool`
   disparando o evento DOM direto (`element.click()` ou `form.requestSubmit()`), e `get_page_text`/`read_page`
   pra verificar o resultado em vez de screenshot.
+- **O `router.replace()`/`router.push()` client-side do Next.js (App Router) também não completa
+  nesse ambiente** — confirmado em 2026-08-25 até no código original do `web/` (sem nenhuma
+  mudança minha), então não é regressão de redesign: uma tela que depende só de um `useEffect`
+  chamando `router.replace(...)` (ex.: redirecionar pra `/login` quando desautenticado) fica
+  parada mostrando o fallback de loading pra sempre *dentro deste ambiente de teste* — em
+  navegador de verdade funciona normal. Pra verificar uma rota protegida aqui, navegue direto
+  pra URL final (`mcp__Claude_Browser__navigate` pro path exato) em vez de confiar no redirect
+  automático.
 - `gh` CLI não está instalado — operações de leitura no GitHub via `curl` na API pública
   (`api.github.com`), e `git clone`/`push` funcionam porque o Git Credential Manager do Windows
   já tinha as credenciais do usuário configuradas.
