@@ -214,7 +214,14 @@ código, mas bom saber se aparecer de novo):
   parada mostrando o fallback de loading pra sempre *dentro deste ambiente de teste* — em
   navegador de verdade funciona normal. Pra verificar uma rota protegida aqui, navegue direto
   pra URL final (`mcp__Claude_Browser__navigate` pro path exato) em vez de confiar no redirect
-  automático.
+  automático. Raiz confirmada: o Next lança `Router action dispatched before initialization`
+  (erro interno `E668`) no console — algo dispara uma ação de router antes do App Router
+  terminar de inicializar, e isso é specífico do **modo dev do Next 16 + Turbopack** neste
+  ambiente. Sintoma relacionado: em dev, conteúdo colocado **depois** de um `<button
+  type="submit">` dentro de um `<form>` às vezes nem chega a montar no DOM (confirmado com um
+  `<div>` fixo de teste que sumia). `npx next start` (build de produção, sem HMR/Turbopack dev)
+  não tem nenhum dos dois problemas — pra validar uma tela de verdade aqui, prefira `next build
+  && next start` a `next dev` quando o dev mode se comportar estranho.
 - `gh` CLI não está instalado — operações de leitura no GitHub via `curl` na API pública
   (`api.github.com`), e `git clone`/`push` funcionam porque o Git Credential Manager do Windows
   já tinha as credenciais do usuário configuradas.
