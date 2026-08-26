@@ -167,7 +167,16 @@ python manage.py run_telegram_bot
   `matheuslippe6-9418s-projects/web`. `NEXT_PUBLIC_API_URL` aponta pro Railway
   acima; `CORS_ALLOWED_ORIGINS` no backend já libera esse domínio. Redesign
   "dispensa.me" (mesmo tema Organic do mobile) aplicado em 2026-08-25, commit
-  `27819de` — Vercel redeploya sozinho a cada push em `main` que toque `web/`.
+  `27819de`. **O projeto do Vercel NAO tem integracao com o GitHub** (foi criado
+  via CLI com `vercel deploy`, `vercel project inspect` nao lista repositorio
+  conectado) — ou seja, **push em `main` nao redeploya nada**. Depois de mexer em
+  `web/`, publique na mao: `cd web && vercel --prod --yes`. Isso ja mordeu a gente
+  em 2026-08-26: o site ficou 1 dia servindo o visual antigo (`<title>Estoque`,
+  `theme-color #2563eb`) porque os 3 commits do dia 25 nunca foram deployados.
+  Pra checar rapido se o que esta no ar bate com o `main`:
+  `curl -s https://web-jade-three-89.vercel.app/ | grep -o "<title>[^<]*</title>"`
+  (deve dizer `dispensa.me`, nao `Estoque`), ou `cd web && vercel ls` pra ver a
+  idade do ultimo deployment.
 - **Mobile (EAS)**: Android, perfil `preview` (APK standalone, instalação
   direta, sem Play Store), aponta pro backend do Railway acima. Build mais
   recente `1ed1c64d-5fa5-437c-aedd-728cd1136a05` (2026-08-25, v1.0.3 — já

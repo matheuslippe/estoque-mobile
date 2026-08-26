@@ -129,6 +129,18 @@ vercel env add NEXT_PUBLIC_API_URL production \
 vercel --prod --yes
 ```
 
+- **Nao ha deploy automatico.** O projeto foi criado pela CLI, sem integracao com
+  o GitHub — push em `main` **nao** dispara build nenhum. Toda vez que `web/`
+  mudar, rode `cd web && vercel --prod --yes` na mao (leva ~30s). Verificar o que
+  esta no ar:
+  ```bash
+  cd web && vercel ls          # olhe a idade do ultimo deployment Production
+  curl -s https://web-jade-three-89.vercel.app/ | grep -o "<title>[^<]*</title>"
+  ```
+  Se um dia quiser automatizar: `vercel git connect` liga o repositorio, mas ai o
+  **Root Directory** do projeto (hoje `.`, porque o deploy sai de dentro de `web/`)
+  precisa virar `web` no painel do Vercel — isso so da pra mudar pela UI, nao pela
+  CLI.
 - `NEXT_PUBLIC_*` **não pode** ser adicionada como variável "sensitive" (padrão do
   `vercel env add`) em Production/Preview — dá erro `invalid_visibility`. Use
   `--no-sensitive` (faz sentido: essas variáveis vão pro bundle JS público mesmo).
