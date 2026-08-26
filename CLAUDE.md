@@ -199,8 +199,17 @@ python manage.py run_telegram_bot
   Cuidado com uma pegadinha do fingerprint: por padrao o `version` do `app.json`
   **tambem** entra no hash (medido em 2026-08-26: 1.0.3 e 1.0.4 davam hashes
   diferentes), ou seja um bump cosmetico de versao cortaria o OTA de todo mundo.
-  Por isso existe o `mobile/fingerprint.config.js` com
-  `sourceSkips: ["ExpoConfigVersions"]` — nao remova achando que e supérfluo.
+  Por isso existe o `mobile/fingerprint.config.js`. Mas cuidado ao mexer nele:
+  **declarar `sourceSkips` sobrescreve os defaults**, e o default
+  `PackageJsonAndroidAndIosScriptsIfNotContainRun` e obrigatorio aqui — a EAS
+  roda `expo prebuild` antes de calcular o fingerprint dela, e o prebuild
+  reescreve os scripts `android`/`ios` do `package.json` (`expo start --android`
+  → `expo run:android`). Sem esse skip o hash local nunca bate com o da EAS e o
+  build **falha** na fase `CONFIGURE_EXPO_UPDATES` com "Runtime version
+  mismatch" (aconteceu no build `bef10566`, 2026-08-26). Pra validar uma mudanca
+  nesse arquivo sem gastar ~33min de build: gere o fingerprint, rode
+  `npx expo prebuild --platform android --no-install`, gere de novo e compare —
+  tem que dar igual. Depois limpe com `rm -rf android && git checkout -- package.json`.
   Pegadinha: **o APK v1.0.3 (`1ed1c64d`) foi buildado ANTES do OTA existir, entao
   ele nunca recebe update** — precisa de um build novo instalado na mao uma
   ultima vez pra virar a chave. Quando um bundle novo termina de baixar, o

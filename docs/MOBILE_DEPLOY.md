@@ -110,6 +110,35 @@ puramente cosmetico cortar o OTA de todos os aparelhos instalados. O
 `sourceSkips: ["ExpoConfigVersions"]` (pula `version`, `android.versionCode` e
 `ios.buildNumber`). Nao apague esse arquivo sem entender o efeito.
 
+### "Runtime version mismatch" (build falhando na fase CONFIGURE_EXPO_UPDATES)
+
+A EAS calcula o fingerprint do lado dela e **aborta o build** se nao bater com o
+que a sua maquina calculou — porque, se batesse errado, os `eas update` que voce
+publicasse daqui nunca alcancariam esse APK. A mensagem traz o diff das fontes.
+
+A pegadinha: **declarar `sourceSkips` no `fingerprint.config.js` sobrescreve os
+defaults**, e um deles (`PackageJsonAndroidAndIosScriptsIfNotContainRun`) e o que
+neutraliza o fato de a EAS rodar `expo prebuild` antes de calcular — o prebuild
+reescreve os scripts `android`/`ios` do `package.json` de `expo start --android`
+pra `expo run:android`. Se voce adicionar um skip novo, **repita os defaults**.
+(O diretorio `android/` que o prebuild cria nao atrapalha: esta no `.gitignore`,
+entao entra como fonte de hash nulo.)
+
+Pra testar uma mudanca no `fingerprint.config.js` sem gastar um build inteiro,
+reproduza o prebuild localmente:
+
+```bash
+cd mobile
+npx expo-updates fingerprint:generate --platform android   # anote o hash
+npx expo prebuild --platform android --no-install
+npx expo-updates fingerprint:generate --platform android   # tem que dar o MESMO hash
+rm -rf android && git checkout -- package.json             # limpa a simulacao
+```
+
+Pra ler o log de um build que falhou (a CLI so mostra a mensagem generica), os
+arquivos vem em **brotli** — `zlib.brotliDecompressSync` no Node resolve; a URL
+sai do campo `logFiles` da query `builds.byId` na API GraphQL da Expo.
+
 Conferir o fingerprint atual (e comparar com o do build instalado):
 
 ```bash

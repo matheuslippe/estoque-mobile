@@ -7,6 +7,13 @@ const config = {
   // e so rotulo pro usuario, pulamos ela: o hash passa a refletir de fato o lado
   // nativo (dependencias, config plugins, autolinking), que e o unico motivo
   // legitimo pra exigir build novo.
-  sourceSkips: ["ExpoConfigVersions"],
+  // ATENCAO: declarar sourceSkips SOBRESCREVE os defaults do @expo/fingerprint.
+  // O "PackageJsonAndroidAndIosScriptsIfNotContainRun" vem ligado por padrao e
+  // precisa ser repetido aqui: o `expo prebuild` (que a EAS roda antes de
+  // calcular o fingerprint dela) reescreve os scripts android/ios do
+  // package.json de "expo start --android" pra "expo run:android". Sem esse
+  // skip, o hash local nunca bate com o da EAS e o build falha com
+  // "Runtime version mismatch" — foi o que derrubou o build bef10566.
+  sourceSkips: ["ExpoConfigVersions", "PackageJsonAndroidAndIosScriptsIfNotContainRun"],
 };
 module.exports = config;
