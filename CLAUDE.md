@@ -168,21 +168,28 @@ python manage.py run_telegram_bot
   acima; `CORS_ALLOWED_ORIGINS` no backend já libera esse domínio. Redesign
   "dispensa.me" (mesmo tema Organic do mobile) aplicado em 2026-08-25, commit
   `27819de`.
-  **Deploy: ainda manual, mas a config de monorepo ja esta pronta.** O projeto
-  foi criado via CLI (`vercel deploy`) e nunca teve integracao com o GitHub, o
-  que fez o site passar 1 dia servindo o visual antigo (`<title>Estoque`,
-  `theme-color #2563eb`) porque os 3 commits do dia 25 nunca foram deployados
-  (2026-08-26). Em 2026-08-26 arrumamos o que dava pela CLI:
-  - `Root Directory` = `web` (`vercel project update --root-directory web`).
-  - **O link do projeto mudou de `web/.vercel` pra raiz do repo** — obrigatorio
-    depois de setar o Root Directory, senao a CLI procura `web/web/package.json`.
-    Ou seja, o deploy manual agora roda **da raiz**: `vercel --prod --yes`
-    (nao mais de dentro de `web/`).
-  - Falta so conectar o GitHub, que **exige acao do usuario no navegador**:
-    a conta da Vercel nao tem "Login Connection" com o GitHub, entao
-    `vercel git connect` falha com 400. Depois de conectar em
-    vercel.com/account/login-connections, rodar
-    `vercel git connect https://github.com/matheuslippe/estoque-mobile.git`.
+  **Autodeploy LIGADO desde 2026-08-26**: push em `main` publica sozinho
+  (`link.productionBranch = main`, verificado com deployment de
+  `source = git`). Antes disso o projeto tinha sido criado via CLI, sem
+  integracao com o GitHub — e isso fez o site passar 1 dia servindo o visual
+  antigo (`<title>Estoque`, `theme-color #2563eb`) porque os 3 commits do dia 25
+  nunca foram deployados. Config atual:
+  - `Root Directory` = `web` (`vercel project update --root-directory web` —
+    da pra fazer pela CLI, nao precisa do painel).
+  - **O link do projeto (`.vercel/`) fica na RAIZ do repo, nao em `web/`** —
+    obrigatorio depois de setar o Root Directory, senao a CLI procura
+    `web/web/package.json` e o deploy manual quebra.
+  - Deploy manual (fallback) roda **da raiz**: `vercel --prod --yes`.
+  - Conectar o GitHub exigiu **duas** coisas distintas no navegador, nessa
+    ordem: (1) *Login Connection* com o GitHub em
+    vercel.com/account/login-connections, e (2) instalar o **GitHub App da
+    Vercel** (github.com/apps/vercel) dando acesso ao repo. So a (1) nao basta:
+    o `vercel git connect` sai do erro "You need to add a Login Connection"
+    e cai em "Failed to connect ... make sure you have access to the
+    repository", que e a (2) faltando.
+  - **Todo push em `main` redeploya**, mesmo commit que so toca `backend/` ou
+    `mobile/`. Nao ha "Ignored Build Step" configurado. Se incomodar, da pra
+    setar um `git diff --quiet HEAD^ HEAD -- .` no painel.
   Pra checar rapido se o que esta no ar bate com o `main`:
   `curl -s https://web-jade-three-89.vercel.app/ | grep -o "<title>[^<]*</title>"`
   (deve dizer `dispensa.me`, nao `Estoque`), ou `vercel ls` pra ver a
