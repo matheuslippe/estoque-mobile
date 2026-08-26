@@ -167,16 +167,28 @@ python manage.py run_telegram_bot
   `matheuslippe6-9418s-projects/web`. `NEXT_PUBLIC_API_URL` aponta pro Railway
   acima; `CORS_ALLOWED_ORIGINS` no backend já libera esse domínio. Redesign
   "dispensa.me" (mesmo tema Organic do mobile) aplicado em 2026-08-25, commit
-  `27819de`. **O projeto do Vercel NAO tem integracao com o GitHub** (foi criado
-  via CLI com `vercel deploy`, `vercel project inspect` nao lista repositorio
-  conectado) — ou seja, **push em `main` nao redeploya nada**. Depois de mexer em
-  `web/`, publique na mao: `cd web && vercel --prod --yes`. Isso ja mordeu a gente
-  em 2026-08-26: o site ficou 1 dia servindo o visual antigo (`<title>Estoque`,
-  `theme-color #2563eb`) porque os 3 commits do dia 25 nunca foram deployados.
+  `27819de`.
+  **Deploy: ainda manual, mas a config de monorepo ja esta pronta.** O projeto
+  foi criado via CLI (`vercel deploy`) e nunca teve integracao com o GitHub, o
+  que fez o site passar 1 dia servindo o visual antigo (`<title>Estoque`,
+  `theme-color #2563eb`) porque os 3 commits do dia 25 nunca foram deployados
+  (2026-08-26). Em 2026-08-26 arrumamos o que dava pela CLI:
+  - `Root Directory` = `web` (`vercel project update --root-directory web`).
+  - **O link do projeto mudou de `web/.vercel` pra raiz do repo** — obrigatorio
+    depois de setar o Root Directory, senao a CLI procura `web/web/package.json`.
+    Ou seja, o deploy manual agora roda **da raiz**: `vercel --prod --yes`
+    (nao mais de dentro de `web/`).
+  - Falta so conectar o GitHub, que **exige acao do usuario no navegador**:
+    a conta da Vercel nao tem "Login Connection" com o GitHub, entao
+    `vercel git connect` falha com 400. Depois de conectar em
+    vercel.com/account/login-connections, rodar
+    `vercel git connect https://github.com/matheuslippe/estoque-mobile.git`.
   Pra checar rapido se o que esta no ar bate com o `main`:
   `curl -s https://web-jade-three-89.vercel.app/ | grep -o "<title>[^<]*</title>"`
-  (deve dizer `dispensa.me`, nao `Estoque`), ou `cd web && vercel ls` pra ver a
+  (deve dizer `dispensa.me`, nao `Estoque`), ou `vercel ls` pra ver a
   idade do ultimo deployment.
+  Nota: `vercel build` local falha no Windows com `EPERM: symlink` — e limitacao
+  de symlink do Windows, nao erro de config; o deploy de verdade builda no Linux.
 - **Mobile (EAS)**: Android, perfil `preview` (APK standalone, instalação
   direta, sem Play Store), aponta pro backend do Railway acima. Build mais
   recente `196fc66f-b3cf-4cf4-bdc6-e87a0fc46ceb` (2026-08-26, v1.0.4,

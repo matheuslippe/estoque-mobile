@@ -21,8 +21,15 @@ web-build/
 *.key
 *.mobileprovision
 
+# Vercel — o link do projeto agora fica na raiz (Root Directory = web),
+# e o `vercel pull`/`vercel build` escrevem env de producao e build output aqui.
+.vercel
+
 # Editors / OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+
+# criado pelo `vercel link` na raiz (guarda o VERCEL_OIDC_TOKEN)
+.env.local
