@@ -188,6 +188,18 @@ python manage.py run_telegram_bot
   A fila do plano gratuito da EAS pode atrasar builds bastante (já vimos
   um levar 45min sem incidente registrado no status.expo.dev) — não é
   sinal de erro, só espera.
+  **OTA ligado desde 2026-08-26** (`expo-updates` + `eas update`, canal =
+  `channel` do perfil no `eas.json`): mudanca so de JS/assets vai pro celular
+  sem build nem reinstalar — `cd mobile && eas update --branch preview -m "..."`.
+  O `runtimeVersion` usa a policy `fingerprint`, entao mexer em codigo/config
+  nativo (dependencia nativa nova, `plugins`, icone, SDK) muda o hash e **exige
+  build novo** — o update publicado simplesmente nao alcanca os APKs antigos, de
+  proposito. Confira com `npx expo-updates fingerprint:generate --platform android`.
+  Pegadinha: **o APK v1.0.3 (`1ed1c64d`) foi buildado ANTES do OTA existir, entao
+  ele nunca recebe update** — precisa de um build novo instalado na mao uma
+  ultima vez pra virar a chave. Quando um bundle novo termina de baixar, o
+  `UpdateBanner` (`mobile/src/components/UpdateBanner.tsx`) aparece no topo pra
+  aplicar na hora; sem tocar nele, entra sozinho no proximo cold start.
   Pra gerar um novo build: `cd mobile && eas build --platform android --profile preview`
   (guia completo em [docs/MOBILE_DEPLOY.md](docs/MOBILE_DEPLOY.md)). iOS e
   builds de `production` (pra loja) ainda não foram feitos — precisam de conta

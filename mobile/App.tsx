@@ -4,6 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "./src/context/AuthContext";
 import { RootNavigator } from "./src/navigation/RootNavigator";
+import { UpdateBanner } from "./src/components/UpdateBanner";
 import { useAppFonts } from "./src/theme/fonts";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -29,6 +30,7 @@ export default function App() {
     <SafeAreaProvider>
       <AuthProvider>
         <RootNavigator />
+        <UpdateBanner />
         <StatusBar style="dark" />
       </AuthProvider>
     </SafeAreaProvider>

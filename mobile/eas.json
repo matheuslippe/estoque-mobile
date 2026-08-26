@@ -9,7 +9,8 @@
       "distribution": "internal",
       "env": {
         "EXPO_PUBLIC_API_URL": "http://127.0.0.1:8000/api"
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
@@ -18,13 +19,15 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://estoque-mobile-production.up.railway.app/api"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_API_URL": "https://estoque-mobile-production.up.railway.app/api"
-      }
+      },
+      "channel": "production"
     }
   },
   "submit": {
