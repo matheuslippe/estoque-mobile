@@ -170,12 +170,12 @@ python manage.py run_telegram_bot
   `27819de` — Vercel redeploya sozinho a cada push em `main` que toque `web/`.
 - **Mobile (EAS)**: Android, perfil `preview` (APK standalone, instalação
   direta, sem Play Store), aponta pro backend do Railway acima. Build mais
-  recente `e07f78e0-cf5f-4469-92d0-9ac1d79051b7` (2026-08-25, v1.0.2 — já
+  recente `1ed1c64d-5fa5-437c-aedd-728cd1136a05` (2026-08-25, v1.0.3 — já
   com o redesign "dispensa.me", cadastro de conta, "esqueci a senha" via
-  Telegram vinculado (não mais o grupo da família), botão Retirar
-  desabilitado quando o item está zerado, e a tela de "Vincular Telegram"
-  no Histórico), SDK 57. Página:
-  https://expo.dev/accounts/matheus_lippe/projects/estoque-mobile/builds/e07f78e0-cf5f-4469-92d0-9ac1d79051b7.
+  Telegram vinculado, botão Retirar desabilitado quando o item está
+  zerado, "Vincular Telegram" no Histórico, e um atalho pra abrir o
+  dashboard web direto do app), SDK 57. Página:
+  https://expo.dev/accounts/matheus_lippe/projects/estoque-mobile/builds/1ed1c64d-5fa5-437c-aedd-728cd1136a05.
   A fila do plano gratuito da EAS pode atrasar builds bastante (já vimos
   um levar 45min sem incidente registrado no status.expo.dev) — não é
   sinal de erro, só espera.
