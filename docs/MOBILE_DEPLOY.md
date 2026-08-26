@@ -99,7 +99,16 @@ nativo do projeto (dependencias nativas, config plugins, `app.json`, `eas.json`)
 Se esse hash mudar, o update publicado **nao alcanca** os APKs antigos — de
 proposito, porque o bundle novo dependeria de codigo nativo que eles nao tem.
 Muda o fingerprint: instalar/remover pacote com codigo nativo, mexer em
-`plugins`/icone/permissoes do `app.json`, subir de SDK. Nesses casos: build novo.
+`plugins`/icone/permissoes do `app.json`, subir de SDK, **ou editar o `eas.json`**
+(ele entra no hash como fonte `easBuild`). Nesses casos: build novo.
+
+Uma coisa que NAO muda o fingerprint, de proposito: bumpar o `version` no
+`app.json`. Por padrao o `@expo/fingerprint` inclui as versoes no hash — medimos
+em 2026-08-26 e 1.0.3 vs 1.0.4 davam hashes diferentes, o que faria um bump
+puramente cosmetico cortar o OTA de todos os aparelhos instalados. O
+`mobile/fingerprint.config.js` desliga isso com
+`sourceSkips: ["ExpoConfigVersions"]` (pula `version`, `android.versionCode` e
+`ios.buildNumber`). Nao apague esse arquivo sem entender o efeito.
 
 Conferir o fingerprint atual (e comparar com o do build instalado):
 

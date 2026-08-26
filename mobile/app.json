@@ -2,7 +2,7 @@
   "expo": {
     "name": "dispensa.me",
     "slug": "estoque-mobile",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "runtimeVersion": {
       "policy": "fingerprint"
     },

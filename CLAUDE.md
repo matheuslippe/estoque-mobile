@@ -192,9 +192,15 @@ python manage.py run_telegram_bot
   `channel` do perfil no `eas.json`): mudanca so de JS/assets vai pro celular
   sem build nem reinstalar — `cd mobile && eas update --branch preview -m "..."`.
   O `runtimeVersion` usa a policy `fingerprint`, entao mexer em codigo/config
-  nativo (dependencia nativa nova, `plugins`, icone, SDK) muda o hash e **exige
-  build novo** — o update publicado simplesmente nao alcanca os APKs antigos, de
-  proposito. Confira com `npx expo-updates fingerprint:generate --platform android`.
+  nativo (dependencia nativa nova, `plugins`, icone, SDK, **e tambem o
+  `eas.json`**, que entra no hash) muda o fingerprint e **exige build novo** — o
+  update publicado simplesmente nao alcanca os APKs antigos, de proposito.
+  Confira com `npx expo-updates fingerprint:generate --platform android`.
+  Cuidado com uma pegadinha do fingerprint: por padrao o `version` do `app.json`
+  **tambem** entra no hash (medido em 2026-08-26: 1.0.3 e 1.0.4 davam hashes
+  diferentes), ou seja um bump cosmetico de versao cortaria o OTA de todo mundo.
+  Por isso existe o `mobile/fingerprint.config.js` com
+  `sourceSkips: ["ExpoConfigVersions"]` — nao remova achando que e supérfluo.
   Pegadinha: **o APK v1.0.3 (`1ed1c64d`) foi buildado ANTES do OTA existir, entao
   ele nunca recebe update** — precisa de um build novo instalado na mao uma
   ultima vez pra virar a chave. Quando um bundle novo termina de baixar, o
