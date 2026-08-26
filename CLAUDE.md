@@ -179,12 +179,15 @@ python manage.py run_telegram_bot
   idade do ultimo deployment.
 - **Mobile (EAS)**: Android, perfil `preview` (APK standalone, instalação
   direta, sem Play Store), aponta pro backend do Railway acima. Build mais
-  recente `1ed1c64d-5fa5-437c-aedd-728cd1136a05` (2026-08-25, v1.0.3 — já
-  com o redesign "dispensa.me", cadastro de conta, "esqueci a senha" via
-  Telegram vinculado, botão Retirar desabilitado quando o item está
-  zerado, "Vincular Telegram" no Histórico, e um atalho pra abrir o
-  dashboard web direto do app), SDK 57. Página:
-  https://expo.dev/accounts/matheus_lippe/projects/estoque-mobile/builds/1ed1c64d-5fa5-437c-aedd-728cd1136a05.
+  recente `196fc66f-b3cf-4cf4-bdc6-e87a0fc46ceb` (2026-08-26, v1.0.4,
+  versionCode 3, runtime version `bcde2cd3791541d0b1818f938d6743168ca73eac`
+  — **o primeiro build com OTA**; carrega tudo do 1.0.3 mais o
+  `UpdateBanner`), SDK 57. Página:
+  https://expo.dev/accounts/matheus_lippe/projects/estoque-mobile/builds/196fc66f-b3cf-4cf4-bdc6-e87a0fc46ceb.
+  O anterior era `1ed1c64d-5fa5-437c-aedd-728cd1136a05` (2026-08-25, v1.0.3 —
+  redesign "dispensa.me", cadastro de conta, "esqueci a senha" via Telegram
+  vinculado, botão Retirar desabilitado com item zerado, "Vincular Telegram" no
+  Histórico, atalho pro dashboard web); esse **nao** recebe OTA.
   A fila do plano gratuito da EAS pode atrasar builds bastante (já vimos
   um levar 45min sem incidente registrado no status.expo.dev) — não é
   sinal de erro, só espera.
@@ -211,8 +214,8 @@ python manage.py run_telegram_bot
   `npx expo prebuild --platform android --no-install`, gere de novo e compare —
   tem que dar igual. Depois limpe com `rm -rf android && git checkout -- package.json`.
   Pegadinha: **o APK v1.0.3 (`1ed1c64d`) foi buildado ANTES do OTA existir, entao
-  ele nunca recebe update** — precisa de um build novo instalado na mao uma
-  ultima vez pra virar a chave. Quando um bundle novo termina de baixar, o
+  ele nunca recebe update** — o v1.0.4 (`196fc66f`) e o primeiro que recebe, e
+  precisa ser instalado na mao uma ultima vez pra virar a chave. Quando um bundle novo termina de baixar, o
   `UpdateBanner` (`mobile/src/components/UpdateBanner.tsx`) aparece no topo pra
   aplicar na hora; sem tocar nele, entra sozinho no proximo cold start.
   Pra gerar um novo build: `cd mobile && eas build --platform android --profile preview`
